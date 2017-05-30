@@ -38,6 +38,7 @@ void fillRect(int x, int y, int w, int h, unsigned int color)
 
 void drawRect(int x, int y, int w, int h, unsigned int color)
 {
+	glLineWidth(1.0f);
 	glBegin(GL_LINE_STRIP); {
 		glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
 		glVertex2f(x,y);
@@ -60,14 +61,25 @@ void drawCrossX(int x, int y, int w, int h, unsigned int color)
 	} glEnd();
 }
 
-void drawText(const char text[], int x, int y, unsigned int color)
+void drawText(const char text[], int x, int y, unsigned int color, void * bitmapfont)
 {
 	glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
 	glRasterPos2i(x, y);
 	// loop all characters in the string
 	while(*text)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *text);
+		glutBitmapCharacter(bitmapfont, *text);
+		++text;
+	}
+}
+
+void drawText(const char text[], unsigned int color, void *bitmapfont)
+{
+	glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
+	// loop all characters in the string
+	while(*text)
+	{
+		glutBitmapCharacter(bitmapfont, *text);
 		++text;
 	}
 }
