@@ -18,6 +18,10 @@
 #pragma warning(disable:4800) 
 #endif
 
+#ifndef CLAMP
+#define CLAMP(x,min,max) ((x)<(min) ? (min) : ((x)>(max)?(max):(x)) )
+#endif
+
 namespace xglm {
 
 void SetMediaPath(const char path[]);
@@ -27,7 +31,8 @@ char * MakeFullPath(const char dir[], const char filename[], char fullpath[]);
 void drawCrossX(int x, int y, int w, int h, unsigned int color);
 void drawRect(int x, int y, int w, int h, unsigned int color);
 void fillRect(int x, int y, int w, int h, unsigned int color);
-void drawText(const char text[], int x, int y, unsigned int color);
+void drawText(const char text[], int x, int y, unsigned int color, void * bitmapfont);
+void drawText(const char text[], unsigned int color, void * bitmapfont);
 double getTimeInMillSecond();
 int getTicks();
 

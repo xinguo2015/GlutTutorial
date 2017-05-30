@@ -36,31 +36,31 @@ namespace xglm {
 
 	void GLUTView::draw2DObjects()
 	{
-		char buf[256];
-		unsigned int color = 0xFF00FF;
+		ImGUIState uis = _gui.getGUIState();
 		unsigned int textcolor = 0xFF0000;
+		char buf[256];
 
 		sprintf(buf, "Rendering speed = %.2f FPS", (float)_fps.getFPS());
-		drawText(buf, getViewWidth()-350, getViewHeight()-30, textcolor);
+		drawText(buf, getViewWidth()-350, getViewHeight()-30, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
 
-		int x = _gui.mGuiState.mousex;
-		int y = _gui.mGuiState.mousey;
+		int x = uis.mousex;
+		int y = uis.mousey;
 		// draw a square to follow the mouse
 		fillRect(x-25, y-25, 50, 50, 0xFFFF);
 		// print the keyboard info
 		x = 50, y = getViewHeight()-60;
-		sprintf(buf, "Keychar    = %c", _gui.mGuiState.lastkeychar);
-		drawText(buf, x, y-=40, textcolor);
-		sprintf(buf, "Keypressed = %c", _gui.mGuiState.lastkeypressed);
-		drawText(buf, x, y-=40, textcolor);
+		sprintf(buf, "Keychar    = %c", uis.lastkeychar);
+		drawText(buf, x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
+		sprintf(buf, "Keypressed = %c", uis.lastkey );
+		drawText(buf, x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
 		// modifiers key
-		drawText("Modifier keys are:", x, y-=40, textcolor);
-		if( _gui.mGuiState.keymodify & GLUT_ACTIVE_SHIFT )
-			drawText("    Shift", x, y-=40, textcolor);
-		if( _gui.mGuiState.keymodify & GLUT_ACTIVE_CTRL )
-			drawText("    Ctrl",  x, y-=40, textcolor);
-		if( _gui.mGuiState.keymodify & GLUT_ACTIVE_ALT )
-			drawText("    Alt",   x, y-=40, textcolor);
+		drawText("Modifier keys are:", x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
+		if( uis.modifier & GLUT_ACTIVE_SHIFT )
+			drawText("    Shift", x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
+		if( uis.modifier & GLUT_ACTIVE_CTRL )
+			drawText("    Ctrl",  x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
+		if( uis.modifier & GLUT_ACTIVE_ALT )
+			drawText("    Alt",   x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24 );
 	}
 
 	void GLUTView::cbReshape (int width, int height)

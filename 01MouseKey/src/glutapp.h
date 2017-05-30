@@ -45,10 +45,10 @@ public:
 
 public:
 	int    _winID;
-	int    _winPosX;
-	int    _winPosY;
 	int    _winWidth;
 	int    _winHeight;
+	int    _winPosX;
+	int    _winPosY;
 	string _winTitle;
 
 protected:

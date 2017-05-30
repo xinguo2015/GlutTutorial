@@ -1,6 +1,6 @@
 
 #include <stdlib.h>
-#include "Timer.h"
+#include "timer.h"
 
 Timer::Timer()
 {

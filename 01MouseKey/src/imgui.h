@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "imgui_keys.h"
+
 
 //===========================================================================
 
@@ -53,12 +53,12 @@ namespace xglm {
 		int hotitem;    // widget below the mouse cursor 光标下的组件ID
 		int activeitem; // widget under interaction 正在交互的组件ID
 
-		int keychar;    // char that is input 输入的字符（ASCII码）
-		int keypressed; // key that was pressed 被按下的普通键
-		int keymodify;  // modifier key
-		int lastkeypressed;
+		int key;        // key pressed 被按下的普通键
+		int keychar;    // char input 输入的字符（ASCII码）
+		int modifier;   // modifier key
+		int lastkey;
 		int lastkeychar;
-		int lastkeymodify;
+		int lastmodifier;
 		
 		int lastwidget; // last widget that was processed 上一个接受键盘的组件
 		int kbditem;    // widget with keyboard focus 接受键盘输入的组件ID
@@ -67,9 +67,10 @@ namespace xglm {
 	class ImGUI
 	{
 	public:
-		ImGUIState mGuiState;
-
+		int  isVisible() const         { return mVisible; }
+		void setVisible(int flag)      { mVisible = flag; }
 		void setfont(void* font);
+		ImGUIState getGUIState() const { return mGuiState; }
 	public:
 		void initialize();
 		void prepare();
@@ -90,10 +91,19 @@ namespace xglm {
 		int radio    (int id, int x, int y, int w, int h, char label[], int reference, int *value);
 		int listbox  (int id, int x, int y, int w, int h, char*items[], int nitem, int *liststart, int *value);
 		int slider   (int id, int x, int y, int w, int h, double minv, double maxv, double delta, double * value);
-		int textbox  (int id, int x, int y, int w, int h, char textbuf[], int maxbuf);
-		int textlabel(int id, int x, int y, char text[]);
+		int slider   (int id, int x, int y, int w, int h, float  minv, float maxv, float delta, float * value);
+		int slider   (int id, int x, int y, int w, int h, int minv, int maxv, int delta, int * value);
+		int editbox  (int id, int x, int y, int w, int h, char textbuf[], int maxbuf);
+		int textlabel(int id, int x, int y, int w, int h, char text[]);
+
+		void radioFrame(int x, int y, int w, int h);
 	protected:
 		int listitem(int id, int x, int y, int w, int h, char label[], int selected);
+		int slider_base(int id, int x, int y, int w, int h, double minv, double maxv, double delta, double * value);
+
+	protected:
+		ImGUIState mGuiState;
+		int        mVisible;
 	};
 
 } //namespace xglm {

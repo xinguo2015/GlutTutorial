@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "utilities.h"
+#include "timer.h"
 
 namespace xglm {
 
@@ -38,6 +39,7 @@ void fillRect(int x, int y, int w, int h, unsigned int color)
 
 void drawRect(int x, int y, int w, int h, unsigned int color)
 {
+	glLineWidth(1.0f);
 	glBegin(GL_LINE_STRIP); {
 		glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
 		glVertex2f(x,y);
@@ -60,14 +62,25 @@ void drawCrossX(int x, int y, int w, int h, unsigned int color)
 	} glEnd();
 }
 
-void drawText(const char text[], int x, int y, unsigned int color)
+void drawText(const char text[], int x, int y, unsigned int color, void * bitmapfont)
 {
 	glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
 	glRasterPos2i(x, y);
 	// loop all characters in the string
 	while(*text)
 	{
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *text);
+		glutBitmapCharacter(bitmapfont, *text);
+		++text;
+	}
+}
+
+void drawText(const char text[], unsigned int color, void *bitmapfont)
+{
+	glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
+	// loop all characters in the string
+	while(*text)
+	{
+		glutBitmapCharacter(bitmapfont, *text);
 		++text;
 	}
 }
@@ -83,14 +96,29 @@ double getTimeInMillSecond()
 #else
 	timeval startCount;
 	gettimeofday(&startCount, NULL);
-    return (startCount.tv_sec * 1000.0) + startCount.tv_usec/1000.0);
+    return (startCount.tv_sec * 1000.0 + startCount.tv_usec/1000.0);
+#endif
+}
+
+double getTimeInMicroSecond()
+{
+#if defined(_WIN32) || defined(_WIN64)
+	LARGE_INTEGER startCount;
+	LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&startCount);
+	return (startCount.QuadPart * (1000000.0 / frequency.QuadPart));
+#else
+	timeval startCount;
+	gettimeofday(&startCount, NULL);
+    return (startCount.tv_sec * 1000000.0 + startCount.tv_usec);
 #endif
 }
 
 int getTicks()
 {
-	double t = getTimeInMillSecond();
-	unsigned int b = 0xFFFFFFF0;
+	double t = getTimeInMicroSecond();
+	int b = 0x7FFFFFF;
 	t -= b * (double)(int)(t/b);
 	return (int)t;
 }
