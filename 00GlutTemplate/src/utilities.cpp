@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "utilities.h"
+#include "timer.h"
 
 namespace xglm {
 
@@ -83,7 +84,7 @@ double getTimeInMillSecond()
 #else
 	timeval startCount;
 	gettimeofday(&startCount, NULL);
-    return (startCount.tv_sec * 1000.0) + startCount.tv_usec/1000.0);
+    return (startCount.tv_sec * 1000.0 + startCount.tv_usec/1000.0);
 #endif
 }
 
