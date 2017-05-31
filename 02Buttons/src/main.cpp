@@ -42,7 +42,7 @@ public:
 	void draw2DObjects()
 	{
 		int w = 100, h = 36, hs = 45;
-		int x = 50,  y = getViewHeight()-20;
+		int x = 50,  y = getHeight()-20;
 
 		// 文本编辑框 
 		_gui.textlabel(GenUIID(0), x, y-=hs, w, h, "Window Title");
@@ -98,13 +98,13 @@ public:
 		// 列表选择框
 		x += 500;
 		y -= 30;
-		_gui.listbox(GenUIID(0),   x, y,       200, hs*4, listitems, 
+		_gui.listbox(GenUIID(0),   x, y, 200, hs*4, listitems, 
 					 sizeof(listitems)/sizeof(listitems[0]), &liststart[0], &listvalue[0]);
-		_gui.textlabel(GenUIID(0), x, y+=hs*4, w,   h,    listitems[listvalue[0]]);
+		_gui.textlabel(GenUIID(0), x, y+=hs*4, w, h, listitems[listvalue[0]]);
 		// another list box
-		_gui.listbox(GenUIID(0),   x, y+=35,   200, hs*6, listitems, 
-					 sizeof(listitems)/sizeof(listitems[0]), &liststart[1], &listvalue[1]);
-		_gui.textlabel(GenUIID(0), x, y+=hs*6, w,   h,    listitems[listvalue[1]]);
+		_gui.listbox(GenUIID(0), x, y+=35, 200, hs*6, listitems, 
+					 sizeof(listitems)/sizeof(listitems[0])/2, &liststart[1], &listvalue[1]);
+		_gui.textlabel(GenUIID(0), x, y+=hs*6, w, h, listitems[listvalue[1]]);
 	}
 };
 

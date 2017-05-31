@@ -44,23 +44,6 @@ public:
 	}
 
 public:
-	int    _winID;
-	int    _winWidth;
-	int    _winHeight;
-	int    _winPosX;
-	int    _winPosY;
-	string _winTitle;
-
-protected:
-	static TView * _glview;
-	static TView * createView()
-	{
-		TView * view = new TView;
-		if( view  ) // initialize
-			view->initialize();
-		return view;
-	}
-public:
 	static void cbReshape(int width, int height)                { getView()->cbReshape(width, height); }
 	static void cbDisplay(void)								    { getView()->cbDisplay(); }
 	static void cbOverlayDisplay(void)							{ getView()->cbOverlayDisplay(); }
@@ -78,6 +61,24 @@ public:
 	static void cbMenuStatus(int status, int x, int y)      	{ getView()->cbMenuStatus(status,x,y); }
 	static void cbMenuState(int state)                      	{ getView()->cbMenuState(state); }
 	static void cbWindowStatus(int state)     					{ getView()->cbWindowStatus(state); }
+	
+protected:
+	int    _winID;
+	int    _winWidth;
+	int    _winHeight;
+	int    _winPosX;
+	int    _winPosY;
+	string _winTitle;
+	
+protected:
+	static TView * _glview;
+	static TView * createView()
+	{
+		TView * view = new TView;
+		if( view  ) // initialize
+			view->initialize();
+		return view;
+	}
 };
 
 template<typename TView> 
@@ -87,23 +88,24 @@ class GLUTView
 {
 public:
 	GLUTView();
-
-public:
-	virtual int  initialize();							       
 	
 public:
 	GLfloat    _bkcolor[4];  // background color
 	GLint      _viewport[4]; // viewport 
 	FPSCounter _fps;         // frame per second
 	ImGUI      _gui;         // Graphic User Interface
+	int        _guiFlag;     // show the GUI ?
 
 public:
-	int  getViewHeight() const { return _viewport[3]; }
-	int  getViewWidth() const  { return _viewport[2]; }
-
+	virtual int  initialize();
 	virtual void draw3DObjects();
 	virtual void draw2DObjects();
 
+	int  getHeight()          const { return _viewport[3]; }
+	int  getWidth()           const { return _viewport[2]; }
+	int  getGUIFlag()         const { return _guiFlag; }
+	void setGUIFlag(int flag)       { _guiFlag = flag; }
+	
 public:
 	// glut callback functions
 	virtual void cbReshape(int width, int height); 

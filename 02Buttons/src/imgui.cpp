@@ -409,7 +409,9 @@ namespace xglm {
 			switch (mGuiState.key)
 			{
 			case IMGUI_RETURN:
+				mGuiState.key = 0;
 				finishEditting = 1;
+				break;
 			case IMGUI_KEY_TAB:
 				// If tab is pressed, lose keyboard focus.
 				// Next widget will grab the focus.

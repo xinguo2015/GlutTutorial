@@ -80,8 +80,8 @@ void drawText(const char text[], unsigned int color, void *bitmapfont)
 	// loop all characters in the string
 	while(*text)
 	{
-		glutStrokeCharacter(bitmapfont, *text);
-		//glutBitmapCharacter(bitmapfont, *text);
+		//glutStrokeCharacter(bitmapfont, *text);
+		glutBitmapCharacter(bitmapfont, *text);
 		++text;
 	}
 }
