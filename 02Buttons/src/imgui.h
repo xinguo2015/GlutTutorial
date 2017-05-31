@@ -49,6 +49,7 @@ namespace xglm {
 		int mousex;     // x - mouse position 鼠标x坐标
 		int mousey;     // y - mouse position 鼠标y坐标
 		int mousedown;  // 1 - yes, 0 - no 是否按下鼠标
+		int wheel;      // 1 and -1 for direction
 
 		int hotitem;    // widget below the mouse cursor 光标下的组件ID
 		int activeitem; // widget under interaction 正在交互的组件ID

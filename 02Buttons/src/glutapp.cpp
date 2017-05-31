@@ -134,6 +134,7 @@ namespace xglm {
 
 	void GLUTView::cbMouse(int button, int state, int x, int y)
 	{
+		//printf("%d %d %d %d\n", button, state, x, y);
 		_gui.onMouse(button, state, x, UpsideDown(y));
 	}
 

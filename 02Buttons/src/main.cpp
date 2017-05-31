@@ -16,12 +16,11 @@
 using namespace xglm;
 
 char textBoxString[50] = "Here to set window title";
-int  editBrightness  = 1;
+int  editBrightness = 1;
 int  radiovalue     = 1;
-int  liststart      = 0;
-int  listvalue      = 1;
-char*listitems[]    = 
-{
+int  liststart[2]   = {0,0};
+int  listvalue[2]   = {0,0};
+char*listitems[]    = {
 	"#1 Apple", 
 	"#2 Pear", 
 	"#3 Grape", 
@@ -60,6 +59,12 @@ public:
 			char label[256]; sprintf(label," button-%d", k);
 			_gui.button(GenUIID(k), x+(w+10)*k, y, w, h, label);
 		}
+		// 滑动条使用 slider bars to tune the R/G/B background color
+		for( int k = 0; k<3; k++ ) { 
+			char *label[]={"Red","Green","Blue"};
+			_gui.textlabel(GenUIID(0), x, y -= hs, w, h, label[k]);
+			_gui.slider(GenUIID(k), x+65, y, 300, 30, 0.0f, 1.0f, 1.0f/255, &_bkcolor[k]);
+		}
 		//  a button to randomize the background color
 		if ( _gui.button(GenUIID(0), x, y-= hs, 450, h, " click me to randomize the background color" ))
 		{
@@ -69,16 +74,10 @@ public:
 			_bkcolor[2] = ((m>> 8)&0xFF)/255.f;
 			_bkcolor[3] = ((m>>12)&0xFF)/255.f;
 		}
-		// 滑动条使用 slider bars to tune the R/G/B background color
-		for( int k = 0; k<3; k++ ) { 
-			char *label[]={"Red","Green","Blue"};
-			_gui.textlabel(GenUIID(0), x, y -= hs, w, h, label[k]);
-			_gui.slider(GenUIID(k), x+65, y, 300, 30, 0.0f, 1.0f, 1.0f/255, &_bkcolor[k]);
-		}
 		// 复选框 a check box to toggle editing brightness
 		char str[256];
 		sprintf(str, "Editting brightness(%.2f)", (_bkcolor[0]+_bkcolor[1]+_bkcolor[2])/3.0f);
-		_gui.checkbox( GenUIID(0), x, y-=hs, 25, 25, str, &editBrightness);
+		_gui.checkbox( GenUIID(0), x, y-=hs, 300, 25, str, &editBrightness);
 		if( editBrightness ) {
 			// slider for editting brightness 
 			double v0 = (_bkcolor[0]+_bkcolor[1]+_bkcolor[2])/3.0, v = v0;
@@ -92,16 +91,20 @@ public:
 		// draw a box frame
 		_gui.radioFrame(x-5, y-hs*3-5,  370, hs * 3);
 		// a group of radio buttons
-		_gui.radio(GenUIID(0), x, y-=hs, 25, 25, "Good",             1, &radiovalue);
-		_gui.radio(GenUIID(0), x, y-=hs, 25, 25, "Excellent",        2, &radiovalue);
-		_gui.radio(GenUIID(0), x, y-=hs, 25, 25, "Great, wonderful", 3, &radiovalue);
+		_gui.radio(GenUIID(0), x, y-=hs, 250, 25, "Good",             1, &radiovalue);
+		_gui.radio(GenUIID(0), x, y-=hs, 250, 25, "Excellent",        2, &radiovalue);
+		_gui.radio(GenUIID(0), x, y-=hs, 250, 25, "Great, wonderful", 3, &radiovalue);
 
 		// 列表选择框
 		x += 500;
-		_gui.listbox(GenUIID(0), x, y, 200, hs*4, listitems, sizeof(listitems)/sizeof(listitems[0]), &liststart, &listvalue);
-		_gui.textlabel(GenUIID(0), x, y+=hs*4, w, h, listitems[listvalue]);
-		_gui.listbox(GenUIID(0), x, y+=30, 200, hs*6, listitems, sizeof(listitems)/sizeof(listitems[0]), &liststart, &listvalue);
-
+		y -= 30;
+		_gui.listbox(GenUIID(0),   x, y,       200, hs*4, listitems, 
+					 sizeof(listitems)/sizeof(listitems[0]), &liststart[0], &listvalue[0]);
+		_gui.textlabel(GenUIID(0), x, y+=hs*4, w,   h,    listitems[listvalue[0]]);
+		// another list box
+		_gui.listbox(GenUIID(0),   x, y+=35,   200, hs*6, listitems, 
+					 sizeof(listitems)/sizeof(listitems[0]), &liststart[1], &listvalue[1]);
+		_gui.textlabel(GenUIID(0), x, y+=hs*6, w,   h,    listitems[listvalue[1]]);
 	}
 };
 

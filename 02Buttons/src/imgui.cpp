@@ -14,9 +14,9 @@ namespace xglm {
 	void fillRect(int x, int y, int w, int h, unsigned int color);
 	void drawText(const char text[], int x, int y, unsigned int color, void * font);
 	void drawText(const char text[], unsigned int color, void * font);
-	int getTicks();
+	int  getTicks();
 
-	static int guiButtonSink      = 2;
+	static int guiButtonSink  = 2;
 	static int guiColorStill  = 0xCCBBAA;
 	static int guiColorHot    = 0xFFDDCC;
 	static int guiColorCheck  = 0xFFEEDD;
@@ -36,6 +36,8 @@ namespace xglm {
 	int GuiFont::setFont(void *f)
 	{
 		if( f == GLUT_BITMAP_TIMES_ROMAN_24 ) 
+			mFontHeight = 24;
+		else if( f==GLUT_STROKE_ROMAN )
 			mFontHeight = 24;
 		else
 			return 0;
@@ -98,6 +100,10 @@ namespace xglm {
 			mGuiState.mousex = x;
 			mGuiState.mousey = y;
 		}
+		else if ( button==3 )
+			mGuiState.wheel = state ? 1 : 0;
+		else if ( button==4 )
+			mGuiState.wheel = state ? -1 : 0;
 	}
 
 	void ImGUI::onMotion(int x, int y)
@@ -160,6 +166,7 @@ namespace xglm {
 
 	int ImGUI::checkbox (int id, int x, int y, int w, int h, char label[], int *value)
 	{
+		int bs = w<h ? w : h;
 		int textAlignY = AlignY(h, guiFont.mFontHeight);
 		// Check whether the button should be hot
 		if (hitRect(x, y, w, h))
@@ -169,10 +176,10 @@ namespace xglm {
 				mGuiState.activeitem = id;
 		}
 		// Draw radio button
-		fillRect(x, y, w, h, mGuiState.hotitem == id ? guiColorHot : guiColorStill);
-		drawText(label, x+w+4, y+textAlignY, guiColorLabel, guiFont.mGlutFont);
+		fillRect(x, y, bs, bs, mGuiState.hotitem == id ? guiColorHot : guiColorStill);
+		drawText(label, x+bs+4, y+textAlignY, guiColorLabel, guiFont.mGlutFont);
 		if ( *value ) // is checked, then draw a cross
-			drawCrossX(x+1, y+1, w-2, h-2, guiColorCheck);
+			drawCrossX(x+1, y+1, bs-2, bs-2, guiColorCheck);
 
 		// If button is hot and active, but mouse button is not down, 
 		// the user must have clicked the button.
@@ -195,6 +202,7 @@ namespace xglm {
 
 	int ImGUI::radio(int id, int x, int y, int w, int h, char label[], int reference, int *value)
 	{
+		int bs = w<h ? w : h;
 		int textAlignY = AlignY(h, guiFont.mFontHeight);
 		// Check whether the button should be hot
 		if (hitRect(x, y, w, h))
@@ -204,12 +212,11 @@ namespace xglm {
 				mGuiState.activeitem = id;
 		}
 		// Draw radio button
-		fillRect(x,y, w, h, mGuiState.hotitem == id ? guiColorHot : guiColorStill);
-		drawText(label, x+w+4, y+textAlignY, guiColorLabel, guiFont.mGlutFont);
-		//drawRect(x,y, w, h, guiColorCheck);
+		fillRect(x,y, bs, bs, mGuiState.hotitem == id ? guiColorHot : guiColorStill);
+		drawText(label, x+bs+4, y+textAlignY, guiColorLabel, guiFont.mGlutFont);
 		if ( reference == *value )
 		{
-			fillRect(x+w/4,y+h/4, w/2, h/2, guiColorCheck);
+			fillRect(x+bs/4,y+bs/4, bs/2, bs/2, guiColorCheck);
 		}
 
 		// If button is hot and active, but mouse button is not down, 
@@ -229,76 +236,6 @@ namespace xglm {
 	}
 	
 	// Simple scroll bar IMGUI widget
-	int ImGUI::slider_base(int id, int x, int y, int w, int h, 
-		double min, double max, double delta, double * value)
-	{
-		int hintsize = 2; // thickness of the focus hint
-		int vertical = w < h;// sliding direction
-
-		// If no widget has keyboard focus, take it
-		if (mGuiState.kbditem == 0)
-			mGuiState.kbditem = id;
-
-		// render the bar
-		if (mGuiState.kbditem == id) {
-			fillRect(x, y, w, h, guiColorFocus );
-			fillRect(x+hintsize, y+hintsize, w-hintsize*2, h-hintsize*2, guiColorStill);
-		}
-		else {
-			fillRect(x, y, w, h, guiColorStill );
-		}
-		
-		// If we have keyboard focus, we'll need to process the keys
-		if (mGuiState.kbditem == id)
-		{
-			switch (mGuiState.key)
-			{
-			case IMGUI_KEY_TAB:
-			case IMGUI_RETURN:
-				// If tab is pressed, lose keyboard focus.
-				// Next widget will grab the focus.
-				mGuiState.kbditem = 0;
-				// If shift was also pressed, we want to move focus
-				// to the previous widget instead.
-				if (mGuiState.modifier & IMGUI_SHIFT)
-					mGuiState.kbditem = mGuiState.lastwidget;
-				// Also clear the key so that next widget
-				// won't process it
-				mGuiState.key = 0;
-				break;
-			case IMGUI_KEY_DOWN:
-			case IMGUI_KEY_LEFT:
-				// Slide slider up (if not at zero)
-				if (*value > min) {
-					(*value) = CLAMP(*value - delta, min, max);
-					return 1;
-				}
-				break;
-			case IMGUI_KEY_UP:
-			case IMGUI_KEY_RIGHT:
-				// Slide slider down (if not at max)
-				if (*value < max) {
-					(*value) = CLAMP(*value + delta, min, max);
-					return 1;
-				}
-				break;
-			}
-		}
-
-		mGuiState.lastwidget = id;
-
-		// Update widget value
-		if (mGuiState.activeitem == id) {
-			double newvalue = 0;
-			if (*value != newvalue ) {
-				*value = newvalue;
-				return 1;
-			}
-		}
-
-		return 0;
-	}
-	// Simple scroll bar IMGUI widget
 	int ImGUI::slider(int id, int x, int y, int w, int h, double min, double max, double delta, double * value)
 	{
 		int cursize = 16; // cursor size
@@ -317,6 +254,7 @@ namespace xglm {
 
 		// Check for hotness
 		if (hitRect(x, y, w, h)) {
+			mGuiState.kbditem = id;
 			mGuiState.hotitem = id;
 			if (mGuiState.activeitem == 0 && mGuiState.mousedown)
 				mGuiState.activeitem = id;
@@ -344,6 +282,7 @@ namespace xglm {
 				vertical ? y + curpos : y+(h-cursize)/2, cursize, cursize, guiColorHot);
 		}
 		// If we have keyboard focus, we'll need to process the keys
+		
 		if (mGuiState.kbditem == id)
 		{
 			switch (mGuiState.key)
@@ -377,7 +316,19 @@ namespace xglm {
 					return 1;
 				}
 				break;
+			default:
+				if( mGuiState.wheel>0 && *value<max) {
+					(*value) = CLAMP(*value + delta, min, max);
+					mGuiState.wheel = 0;
+					return 1;
+				}
+				else if( mGuiState.wheel<0 && *value>min) {
+					(*value) = CLAMP(*value - delta, min, max);
+					mGuiState.wheel = 0;
+					return 1;
+				}
 			}
+				
 		}
 
 		mGuiState.lastwidget = id;
@@ -426,6 +377,7 @@ namespace xglm {
 		// Check whether the button should be hot
 		if (hitRect(x, y, w, h))
 		{
+			mGuiState.kbditem = id;
 			mGuiState.hotitem = id;
 			if (mGuiState.activeitem == 0 && mGuiState.mousedown)
 				mGuiState.activeitem = id;
@@ -515,6 +467,9 @@ namespace xglm {
 			needslider = 1;
 			witems -= 22;
 		}
+		
+		if( needslider && hitRect(x,y,w,h) )
+			mGuiState.kbditem = 0; // force slider take keyboard
 
 		fillRect(x, y, w, h,guiColorStill);
 		int slidervalue = nitem-*firstitem;

@@ -15,9 +15,9 @@ template <class TView>
 class GLUTApp
 {
 public:
-	GLUTApp(const char title[] = "OpenGL Application", 
-			int winWidth = 800,  int winHeight = 600,    int posX = 200,  int posY = 200 ) : _winID(-1),  
-			_winWidth(winWidth),  _winHeight(winHeight), _winPosX(posX),  _winPosY(posY)
+	GLUTApp(const char title[] = "OpenGL Application", int winWidth = 800,  int winHeight = 600,
+			int posX = 200,  int posY = 200 ) :_winID(-1),  _winWidth(winWidth),  
+			_winHeight(winHeight), _winPosX(posX),  _winPosY(posY)
 	{	
 		_winTitle = string(title);
 	}
@@ -45,10 +45,10 @@ public:
 
 public:
 	int    _winID;
-	int    _winPosX;
-	int    _winPosY;
 	int    _winWidth;
 	int    _winHeight;
+	int    _winPosX;
+	int    _winPosY;
 	string _winTitle;
 
 protected:
