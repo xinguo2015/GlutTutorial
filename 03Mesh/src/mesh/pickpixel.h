@@ -47,8 +47,8 @@ public:
 	
 protected:
 	std::vector<PixelInfo>	mBuffer;
-	int  mSize[2];
-	bool mDirty;
+	int mSize[2];
+	int mDirty;
 };
 
 }

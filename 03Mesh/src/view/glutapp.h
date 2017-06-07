@@ -34,21 +34,30 @@ public:
 class Shape3D
 {
 public:
-	virtual Vec3f getCenter() const        { return Vec3f(0,0,0); } ;
-	virtual float getRadius() const        { return 1.0; };
+	Vec3f & getBdCenter()  { return _bdCenter; }
+	float & getBdRadius()  { return _bdRadius; }
+	Mat4f & getRotation()  { return _rotation; }
+	Vec3f & getRotCenter() { return _rotCenter; }
+	Vec3f & getScaling()   { return _scaling; }
+public:
 	virtual void  drawSolid() const        {}
 	virtual void  drawID()    const        {} 
 	virtual void  drawPicked(int id) const {}
-	virtual void  applyTransformGL() const {
-		glTranslatef( _shapeRotCenter.x, _shapeRotCenter.y, _shapeRotCenter.z);
-		glMultMatrixf(_shapeRotation.get_glmatrix());
-		glScalef(_shapeScaling.x, _shapeScaling.y, _shapeScaling.z); 
-		glTranslatef( -_shapeRotCenter.x, -_shapeRotCenter.y, -_shapeRotCenter.z);
-	}    
+	virtual void  applyXformGL() const {
+		glTranslatef( _rotCenter.x, _rotCenter.y, _rotCenter.z);
+		glMultMatrixf(_rotation.get_glmatrix());
+		glScalef(_scaling.x, _scaling.y, _scaling.z); 
+		glTranslatef( -_rotCenter.x, -_rotCenter.y, -_rotCenter.z);
+	} 
 public:
-	Vec3f  _shapeRotCenter;    // center of the rotation
-	Mat4f  _shapeRotation;     // rotation on the shape
-	Vec3f  _shapeScaling;      // scaling ont the shape
+	Vec3f  _bdCenter;     // center of the bounding sphere
+	float  _bdRadius;     // radius of the bounding sphere
+	//
+	// shape transformation
+	//
+	Mat4f  _rotation;     // rotation on the shape
+	Vec3f  _rotCenter;    // center of the rotation
+	Vec3f  _scaling;      // scaling ont the shape
 };
 
 class Arcball

@@ -18,18 +18,30 @@ typedef vector<int> IntList;
 class AABBox
 {
 public:
-	Vec3d _lower;
-	Vec3d _upper;
+	Vec3f _lower;
+	Vec3f _upper;
 public: 
 	AABBox();
 	bool empty() const;
-	void set(const Vec3d p[], int n);
-	void set(const Vec3f p[], int n);
+		 template<typename TVec3>
+	void set(const TVec3 p[], int n);
 public:
-	const Vec3d lower() const	{ return _lower; }
-	const Vec3d upper() const	{ return _upper; }
-	const Vec3d extend() const	{ return _upper-_lower;}
+	const Vec3f lower() const	{ return _lower; }
+	const Vec3f upper() const	{ return _upper; }
+	const Vec3f extend() const	{ return _upper-_lower;}
 };
+
+template<typename TVec3>
+void AABBox::set(const TVec3 p[], int n)
+{
+	if ( n<1 ) return;
+	V3_COPY(_lower, p[0]);
+	V3_COPY(_upper, p[0]);
+	for( int k = 1; k<n; k++ ) {
+		V3_MIN(_lower, _lower, p[k]);
+		V3_MAX(_upper, _upper, p[k]);
+	}
+}
 
 class HalfEdge
 {

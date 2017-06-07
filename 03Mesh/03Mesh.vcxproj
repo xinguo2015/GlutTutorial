@@ -50,7 +50,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../libs/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libs/include/;./src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -67,7 +67,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../libs/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libs/include/;./src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -78,19 +78,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\glutapp.cpp" />
-    <ClCompile Include="src\imgui.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\timer.cpp" />
-    <ClCompile Include="src\utilities.cpp" />
+    <ClCompile Include="src\demo.cpp" />
+    <ClCompile Include="src\demo_imgui.cpp" />
+    <ClCompile Include="src\mesh\drawmesh.cpp" />
+    <ClCompile Include="src\mesh\meshIO.cpp" />
+    <ClCompile Include="src\mesh\meshIO_obj.cpp" />
+    <ClCompile Include="src\mesh\trimesh.cpp" />
+    <ClCompile Include="src\view\glutapp.cpp" />
+    <ClCompile Include="src\view\glutapp_arcball.cpp" />
+    <ClCompile Include="src\view\glutapp_draw.cpp" />
+    <ClCompile Include="src\view\glutapp_events.cpp" />
+    <ClCompile Include="src\view\imgui.cpp" />
+    <ClCompile Include="src\view\timer.cpp" />
+    <ClCompile Include="src\view\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\glutapp.h" />
-    <ClInclude Include="src\imgui.h" />
-    <ClInclude Include="src\imgui_keys.h" />
-    <ClInclude Include="src\myglut.h" />
-    <ClInclude Include="src\timer.h" />
-    <ClInclude Include="src\utilities.h" />
+    <ClInclude Include="src\demo.h" />
+    <ClInclude Include="src\mesh\drawmesh.h" />
+    <ClInclude Include="src\mesh\meshIO.h" />
+    <ClInclude Include="src\mesh\pickpixel.h" />
+    <ClInclude Include="src\mesh\trimesh.h" />
+    <ClInclude Include="src\mesh\xglm.h" />
+    <ClInclude Include="src\view\glutapp.h" />
+    <ClInclude Include="src\view\imgui.h" />
+    <ClInclude Include="src\view\imgui_keys.h" />
+    <ClInclude Include="src\view\myglut.h" />
+    <ClInclude Include="src\view\timer.h" />
+    <ClInclude Include="src\view\utilities.h" />
+    <ClInclude Include="src\view\variables.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

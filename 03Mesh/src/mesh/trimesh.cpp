@@ -6,34 +6,13 @@
 namespace xglm {
 	
 AABBox::AABBox()
-:_lower(DBL_MAX,DBL_MAX,DBL_MAX), _upper(0,0,0)
+:_lower(FLT_MAX, FLT_MAX, FLT_MAX), _upper(0,0,0)
 {
 }
 
 bool AABBox::empty() const
 {
-	return (_lower.x==DBL_MAX);
-}
-
-void AABBox::set(const Vec3d p[], int n)
-{
-	if ( n<1 ) return;
-	_lower = _upper = p[0];
-	for( int k = 1; k<n; k++ ) {
-		V3_MIN(_lower, _lower, p[k]);
-		V3_MAX(_upper, _upper, p[k]);
-	}
-}
-
-void AABBox::set(const Vec3f p[], int n)
-{
-	if ( n<1 ) return;
-	V3_COPY(_lower, p[0]);
-	V3_COPY(_upper, p[0]);
-	for( int k = 1; k<n; k++ ) {
-		V3_MIN(_lower, _lower, p[k]);
-		V3_MAX(_upper, _upper, p[k]);
-	}
+	return (_lower.x==FLT_MAX);
 }
 
 int HEdgeList::edgeOf(int endVertex) const
@@ -143,7 +122,7 @@ void normalizeNormal(
 		if( len>1.0e-6 )
 			faceNormal[k] /= len;
 		if( keepArea )
-			faceArea[k] = len/2.0;
+			faceArea[k] = len/2.f;
 	}
 }
 

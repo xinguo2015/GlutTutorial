@@ -153,6 +153,8 @@ int readOBJMeshData(std::istream& sourceStream, MeshData& data )
 			readNormal  ( ss, data ); NN++; continue; } 
 		if( token == "vf" && data.texCoord ){ 
 			readTangent ( ss, data ); continue; }
+		if( token == "" )        // empty string
+			continue; 
 		if( token[0] == '#' )    // comment
 			continue;  
 		if( token == "o" )       // object name		
@@ -164,8 +166,6 @@ int readOBJMeshData(std::istream& sourceStream, MeshData& data )
 		if( token == "mtllib" )  // material library
 			continue; 
 		if( token == "usemtl" )  // material
-			continue; 
-		if( token == "" )        // empty string
 			continue; 
 		// fail with error
 		xglm_debug("Seems invalid Wavefront OBJ file! (Offending line:\n%s\n",line.c_str());

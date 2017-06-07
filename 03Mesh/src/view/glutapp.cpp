@@ -42,6 +42,7 @@ namespace xglm {
 		_bkcolor[2] = 0.9f;
 		_bkcolor[3] = 1.0f;
 		setGUIFlag(1);
+		_shape = NULL;
 	}
 
 	int GLUTView::init()
@@ -56,17 +57,14 @@ namespace xglm {
 		if( ! shape ) return;
 		_shape = shape;
 		// store some scene parameters
-		Vec3f cen = shape->getCenter();
-		float sphRadius = shape->getRadius();
-		shape->_shapeRotCenter.set(cen.x, cen.y, cen.z);
-		shape->_shapeRotation.make_identity();
-		shape->_shapeScaling.set(1.f, 1.f, 1.f);
+		Vec3f cen = shape->getBdCenter();
+		float rds = shape->getBdRadius();
 		// model view
-		Vec3f eye = cen + sphRadius * 2.f * Vec3f(0,0,1);
+		Vec3f eye = cen + Vec3f(0, 0, 2*rds);
 		_modelview.translation(-eye.x, -eye.y, -eye.z);
 		// adjust near/far plane
-		_camera._znear = sphRadius/10;
-		_camera._zfar = sphRadius*10;
+		_camera._znear = rds/10;
+		_camera._zfar = rds*10;
 		// setup track ball
 		Vec4d rotCenter = _modelview * Vec4d(cen.x, cen.y, cen.z, 1);
 		_arcball.setRotCenter(rotCenter.x, rotCenter.y, rotCenter.z);
@@ -82,8 +80,8 @@ namespace xglm {
 
 	void GLUTView::setupGL() 
 	{
-		Vec3f cen = _shape->getCenter();
-		float sphRadius = _shape->getRadius();
+		Vec3f cen = _shape->getBdCenter();
+		float rds = _shape->getBdRadius();
 		glClearColor(0, 0, 0, 0);
 		glClearDepth(1.0f);// 0 is near, 1 is far
 		glEnable(GL_DEPTH_TEST);
@@ -94,7 +92,7 @@ namespace xglm {
 		glLineWidth(2.0f);
 		glPointSize(15.f);
 		// init lights
-		_variables["GL_LIGHT0_POSITION"].getVec4f() = Vec4f( sphRadius/4, 0.f, 0.f, 1.f );
+		_variables["GL_LIGHT0_POSITION"].getVec4f() = Vec4f( rds/4, 0.f, 0.f, 1.f );
 		_variables["GL_LIGHT0_DIFFUSE"].getVec4f() = Vec4f( 0.7f, 0.8f, 0.8f, 1.f );
 		// setup light
 		glEnable(GL_LIGHTING); 

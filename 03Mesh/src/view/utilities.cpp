@@ -1,9 +1,13 @@
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 #include "utilities.h"
 #include "timer.h"
+
+#ifndef M_PI
+#define M_PI   double(3.1415926535897932384626433832795)
+#endif
 
 namespace xglm {
 

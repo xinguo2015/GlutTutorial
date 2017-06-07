@@ -5,6 +5,13 @@
 #include <vector>
 #include "Math3D/math.h"
 
+
+#if (defined _WIN32) || (defined _WIN64)
+#pragma warning(disable:4996) 
+#pragma warning(disable:4244) 
+#pragma warning(disable:4800) 
+#endif
+
 namespace xglm {
 
 typedef std::vector<int>    IntArray;

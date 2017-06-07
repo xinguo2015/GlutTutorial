@@ -25,17 +25,12 @@ public:
 public:
 	void setMesh(TriMesh *mesh) {
 		_mesh = mesh;
-		V3_ADD(_center, mesh->mAABBox._lower, mesh->mAABBox._upper);
-		_center *= 0.5f;
-		_radius = mesh->mAABBox.extend().length()/2;
-	}
-	// override method in Shape3D
-	virtual Vec3f getCenter() const {
-		return _center; 
-	}
-	// override method in Shape3D
-	virtual float getRadius() const {
-		return _radius; 
+		_bdCenter = mesh->mAABBox._lower + mesh->mAABBox._upper;
+		_bdCenter *= 0.5f;
+		_bdRadius = mesh->mAABBox.extend().length()/2;
+		_rotCenter = _bdCenter;
+		_rotation.make_identity();
+		_scaling.set(1.f, 1.f, 1.f);
 	}
 	// override method in Shape3D
 	virtual void  drawSolid() const {
@@ -52,8 +47,6 @@ public:
 	}
 protected:
 	TriMesh* _mesh;
-	Vec3f    _center;
-	float    _radius;
 };
 
 class MyView : public GLUTView

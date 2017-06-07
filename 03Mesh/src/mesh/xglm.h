@@ -1,9 +1,3 @@
-/*****************************************************
-	> File:   xglm.h
-	> Author: Xinguo Liu
-	> EMail:  xgliu@cad.zju.edu.cn 
-	> Date:   2016年01月17日 星期日 12时58分44秒
- ***************************************************/
 
 #ifndef __xglm_h_________________________
 #define __xglm_h_________________________
@@ -25,14 +19,14 @@
 
 
 namespace xglm {
-	
-typedef std::vector<int>    IntArray;
-typedef std::vector<float>  FloatArray;
-typedef std::vector<double> DoubleArray;
 
-typedef std::vector<Vec3i>  V3iArray;
-typedef std::vector<Vec3f>  V3fArray;
-typedef std::vector<Vec3d>  V3dArray;
+	typedef std::vector<int>    IntArray;
+	typedef std::vector<float>  FloatArray;
+	typedef std::vector<double> DoubleArray;
+
+	typedef std::vector<Vec3i>  V3iArray;
+	typedef std::vector<Vec3f>  V3fArray;
+	typedef std::vector<Vec3d>  V3dArray;
 
 } //namespace xglm {
 
