@@ -19,7 +19,7 @@ namespace xglm {
 		double plen2 = p.dot(p);
 		if( plen2<1 ) b.z = sqrt(1-plen2);
 		else          b  /= sqrt(plen2);
-		// b.y = -b.y;
+		//b.y = -b.y;
 		return b;
 	}
 	
@@ -35,6 +35,13 @@ namespace xglm {
 	Arcball::Arcball()
 	{
 		_inDragging = 0;
+		resetRotation();
+	}
+
+	void Arcball::resetRotation()
+	{
+		_rotQuat.set_value(0,0,0,1);
+		_dragQuat.set_value(0,0,0,1);
 	}
 
 	void Arcball::setBallSize(double size)
@@ -74,6 +81,8 @@ namespace xglm {
 				Vec3d a = makeBallPoint( (pclick-_ballCenter)/_ballSize );
 				Vec3d b = makeBallPoint( (pnow-_ballCenter)/_ballSize );
 				_dragQuat = Quatd(a,b);
+				_dragQuat = _dragQuat * _dragQuat; // double speed;
+				_dragQuat = _dragQuat * _dragQuat; // quadric speed;
 				stage = 2;
 			}
 			else { // button up
@@ -92,7 +101,8 @@ namespace xglm {
 		Vec3d axis; double angle; 
 		// get the rotation in axis/angle
 		if( inDragging() )
-			(_rotQuat*_dragQuat).get(axis, angle);
+			//(_rotQuat*_dragQuat).get(axis, angle);
+			(_dragQuat * _rotQuat).get(axis, angle);
 		else
 			_rotQuat.get(axis, angle);
 		// [c][rot][-c]
@@ -104,8 +114,9 @@ namespace xglm {
 	void Arcball::stopDrag()
 	{
 		_inDragging = false;
+		//_rotQuat = _rotQuat * _dragQuat;
 		_rotQuat = _dragQuat * _rotQuat;
-		_rotQuat.set_value(0,0,0,1);
+		//_rotQuat.set_value(0,0,0,1);
 	}
 	
 } //namespace xglm {

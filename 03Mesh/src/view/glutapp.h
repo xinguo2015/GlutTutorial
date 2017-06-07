@@ -68,6 +68,7 @@ public:
 	void setBallSize(double size);
 	void setBallCenter(double x, double y);
 	void setRotCenter(double x, double y, double z);
+	void resetRotation();
 	int  inDragging() const;
 	int  update(ImGUIState gs);
 	void applyGLxform() const;
@@ -112,6 +113,7 @@ public:
 	void setGUIFlag(int flag)       { _guiFlag = flag; }
 	void displayMessages();
 	void setShape(Shape3D * shape);
+	void initArcball();
 	
 	virtual int  init();
 	virtual void setupGL();

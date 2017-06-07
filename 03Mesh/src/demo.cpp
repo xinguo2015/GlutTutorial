@@ -27,6 +27,7 @@ int main (int argc, char *argv[])
 			theMesh.needVtxNormals();
 			mdoc.setMesh( &theMesh );
 			theAPP.getView()->setShape( &mdoc );
+			theAPP.getView()->initArcball();
 			theAPP.getView()->setupGL();
 		}
 	}

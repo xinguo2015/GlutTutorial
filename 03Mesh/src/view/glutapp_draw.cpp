@@ -98,7 +98,7 @@ namespace xglm {
 		_camera.applyProjection();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		//_arcball.applyGLxform();
+		_arcball.applyGLxform();
 		//glMultMatrixd( _dragXform.get_glmatrix() );
 		glMultMatrixd( _modelview.get_glmatrix() );
 	}

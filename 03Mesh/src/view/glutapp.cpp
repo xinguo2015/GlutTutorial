@@ -70,8 +70,13 @@ namespace xglm {
 		// adjust near/far plane
 		_camera._znear = rds/10;
 		_camera._zfar = rds*10;
-		// setup track ball
+	}
+
+	void GLUTView::initArcball()
+	{
+		Vec3f cen = _shape->getBdCenter();
 		Vec4d rotCenter = _modelview * Vec4d(cen.x, cen.y, cen.z, 1);
+		_arcball.resetRotation();
 		_arcball.setRotCenter(rotCenter.x, rotCenter.y, rotCenter.z);
 	}
 	
