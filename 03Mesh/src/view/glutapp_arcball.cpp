@@ -32,6 +32,11 @@ namespace xglm {
 		return Quatd(a,b);
 	}
 
+	Arcball::Arcball()
+	{
+		_inDragging = 0;
+	}
+
 	void Arcball::setBallSize(double size)
 	{
 		_ballSize = size;

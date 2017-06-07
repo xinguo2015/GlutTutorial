@@ -19,13 +19,13 @@ int main (int argc, char *argv[])
 	}
 	// load mesh
 	if( argc>1 ) {
-		TriMesh mesh;
-		MeshDoc mdoc;
-		if( MeshIO<TriMesh>::readMesh(argv[1], mesh) ) {
-			mesh.needAABBox();
-			mesh.needFaceNormals();
-			mesh.needVtxNormals();
-			mdoc.setMesh( &mesh );
+		static MeshDoc mdoc;
+		static TriMesh theMesh;
+		if( MeshIO<TriMesh>::readMesh(argv[1], theMesh) ) {
+			theMesh.needAABBox();
+			theMesh.needFaceNormals();
+			theMesh.needVtxNormals();
+			mdoc.setMesh( &theMesh );
 			theAPP.getView()->setShape( &mdoc );
 			theAPP.getView()->setupGL();
 		}

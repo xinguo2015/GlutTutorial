@@ -33,7 +33,7 @@ public:
 		_scaling.set(1.f, 1.f, 1.f);
 	}
 	// override method in Shape3D
-	virtual void  drawSolid() const {
+	virtual void drawSolid() const {
 		DrawMesh::Face(_mesh->mTriangles, _mesh->mPosition, _mesh->mNormal); 
 	}
 	// override method in Shape3D

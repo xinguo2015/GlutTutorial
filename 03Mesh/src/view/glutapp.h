@@ -23,6 +23,7 @@ public:
 	GLCamera();
 	GLCamera(GLfloat fovy, GLfloat aspect, GLfloat znear,  GLfloat zfar);
 public:
+	void reshape(int width, int height);
 	void applyProjection() const;
 public:
 	GLfloat _fovy;   // field of view in Y direction
@@ -63,6 +64,7 @@ public:
 class Arcball
 {
 public:
+	Arcball();
 	void setBallSize(double size);
 	void setBallCenter(double x, double y);
 	void setRotCenter(double x, double y, double z);
@@ -74,8 +76,8 @@ protected:
 	void startDrag();
 	void stopDrag();
 protected:
-	Vec2d  _ballCenter;
 	double _ballSize;
+	Vec2d  _ballCenter;
 	Vec3d  _rotCenter;
 	Quatd  _rotQuat;
 	Quatd  _dragQuat;
@@ -130,7 +132,6 @@ public:
 	// glut callback functions
 	virtual void cbReshape(int width, int height); 
 	virtual void cbDisplay(void);
-	virtual void cbOverlayDisplay(void);
 	virtual void cbKeyboard(unsigned char key, int x, int y); 
 	virtual void cbKeyboardUp(unsigned char key, int x, int y);
 	virtual void cbSpecial(int key, int x, int y);
@@ -138,6 +139,7 @@ public:
 	virtual void cbMouse(int button, int state, int x, int y);
 	virtual void cbMotion(int x, int y);
 	virtual void cbPassiveMotion(int x, int y );
+	virtual void cbOverlayDisplay(void)                {}
 	virtual void cbEntry(int state)                    {}
 	virtual void cbVisibility(int state)               {}
 	virtual void cbIdle(void)                          {}

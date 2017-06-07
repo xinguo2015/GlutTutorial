@@ -18,8 +18,8 @@ namespace xglm {
 	{
 		_fovy   = 45;
 		_aspect = 1;
-		_znear  = 0.01f;
-		_zfar   = 100;
+		_znear  = 0.1f;
+		_zfar   = 10;
 	}
 	
 	GLCamera::GLCamera(GLfloat fovy, GLfloat aspect, GLfloat znear,  GLfloat zfar)
@@ -33,6 +33,11 @@ namespace xglm {
 	void GLCamera::applyProjection() const
 	{
 		gluPerspective(_fovy, _aspect, _znear, _zfar);
+	}
+
+	void GLCamera::reshape(int width, int height)
+	{
+		_aspect = width/float(height); 
 	}
 
 	GLUTView::GLUTView()

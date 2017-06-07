@@ -18,14 +18,11 @@ namespace xglm {
 	{
 		glViewport(0, 0, width, height);
 		glGetIntegerv(GL_VIEWPORT, _viewport);
+		_camera.reshape(width, height);
 		_arcball.setBallCenter(width/2,height/2);
-		_arcball.setBallSize(width<height?width:height);
+		_arcball.setBallSize( width<height ? width : height );
 	}
 	
-	void GLUTView::cbOverlayDisplay(void)
-	{
-	}
-
 	void GLUTView::cbKeyboard(unsigned char key, int x, int y)
 	{
 		_gui.onKeyboard(key, glutGetModifiers(), x, UpsideDown(y));

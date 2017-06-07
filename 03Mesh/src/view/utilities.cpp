@@ -54,7 +54,7 @@ void drawCircle(float cx, float cy, float r, int num_segments, unsigned int colo
 void fillDiamond(int x, int y, int w, int h, unsigned int color)
 {
 	glBegin(GL_QUADS); {
-		glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
+		glColor4ubv( (GLubyte*)& color );	
 		glVertex2f(x+w/2,y);
 		glVertex2f(x+w,y+h/2);
 		glVertex2f(x+w/2,y+h);
@@ -65,7 +65,8 @@ void fillDiamond(int x, int y, int w, int h, unsigned int color)
 void fillRect(int x, int y, int w, int h, unsigned int color)
 {
 	glBegin(GL_QUADS); {
-		glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
+		glColor4ubv( (GLubyte*)& color );	
+		//glColor4ubv( reinterpret_cast<GLubyte*>( & color ) );	
 		glVertex2f(x,y);
 		glVertex2f(x+w,y);
 		glVertex2f(x+w,y+h);

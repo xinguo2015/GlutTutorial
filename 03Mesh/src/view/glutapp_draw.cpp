@@ -53,8 +53,10 @@ namespace xglm {
 		glClearColor(_bkcolor[0], _bkcolor[1], _bkcolor[2], _bkcolor[3]);
 		glClearDepth(1.0f);// 0 is near, 1 is far
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// setting up for 3D drawing
-		draw3DObjects();
+		// 3D drawing
+		if( ! getGUIFlag() ) {
+			draw3DObjects();
+		}
 		// compute the rendering speed (frames/second)
 		_fps.update();
 		// setting up for 2D drawing
@@ -68,6 +70,7 @@ namespace xglm {
 		//glTranslatef(0, _viewport[3],0);
 		//glScalef(1.f, -1.f, 1.f);
 		glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT);
+		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);             //disable lighting for proper text color
 		glDisable(GL_TEXTURE_2D);           //no texture
 		displayMessages();
@@ -95,8 +98,8 @@ namespace xglm {
 		_camera.applyProjection();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		_arcball.applyGLxform();
-		glMultMatrixd( _dragXform.get_glmatrix() );
+		//_arcball.applyGLxform();
+		//glMultMatrixd( _dragXform.get_glmatrix() );
 		glMultMatrixd( _modelview.get_glmatrix() );
 	}
 
