@@ -46,6 +46,9 @@ namespace xglm {
 	class ImGUIState
 	{
 	public:
+		ImGUIState();
+
+	public:
 		int mousex;     // x - mouse position
 		int mousey;     // y - mouse position
 		int buttondown; // 1 - down, 0 - otherwise
@@ -66,11 +69,11 @@ namespace xglm {
 	class ImGUI
 	{
 	public:
-		int  isVisible() const         { return mVisible; }
-		void setVisible(int flag)      { mVisible = flag; }
-		void setfont(void* font);
+		ImGUI()                        { initialize(); mFlags = 1; }
 		ImGUIState getGUIState() const { return mGuiState; }
+		int  flags()                   { return mFlags; }
 	public:
+		void setfont(void* font);
 		void initialize();
 		void prepare();
 		void finish();	
@@ -102,7 +105,7 @@ namespace xglm {
 
 	protected:
 		ImGUIState mGuiState;
-		int        mVisible;
+		int        mFlags;
 	};
 
 } //namespace xglm {

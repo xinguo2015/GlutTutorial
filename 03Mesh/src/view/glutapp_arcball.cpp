@@ -8,6 +8,7 @@
 
 #include "Math3D/math.h"
 #include "imgui.h"
+#include "glutapp.h"
 
 
 namespace xglm {
@@ -31,4 +32,75 @@ namespace xglm {
 		return Quatd(a,b);
 	}
 
+	void Arcball::setBallSize(double size)
+	{
+		_ballSize = size;
+	}
+	
+	void Arcball::setBallCenter(double x, double y)
+	{
+		_ballCenter = Vec2d(x,y);
+	}
+	
+	void Arcball::setRotCenter(double x, double y, double z)
+	{
+		_rotCenter = Vec3d(x,y,z);
+	}
+	
+	int  Arcball::inDragging() const
+	{
+		return _inDragging;
+	}
+	
+	void Arcball::startDrag()
+	{
+		_inDragging = true;
+		_dragQuat.set_value(0,0,0,1);
+	}
+	
+	int Arcball::update(ImGUIState gs)
+	{
+		int stage = 0;
+		if( inDragging() ) {
+			if( gs.buttondown ) { 
+				// keep dragging
+				Vec2d pclick(gs.clickxy[0], gs.clickxy[1]);
+				Vec2d pnow(gs.mousex, gs.mousey);
+				Vec3d a = makeBallPoint( (pclick-_ballCenter)/_ballSize );
+				Vec3d b = makeBallPoint( (pnow-_ballCenter)/_ballSize );
+				_dragQuat = Quatd(a,b);
+				stage = 2;
+			}
+			else { // button up
+				stopDrag();
+				stage = 3;
+			}
+		} else if( gs.buttondown ) {
+			startDrag();
+			stage = 1;
+		} 
+		return stage;
+	}
+	
+	void Arcball::applyGLxform() const
+	{
+		Vec3d axis; double angle; 
+		// get the rotation in axis/angle
+		if( inDragging() )
+			(_rotQuat*_dragQuat).get(axis, angle);
+		else
+			_rotQuat.get(axis, angle);
+		// [c][rot][-c]
+		glTranslated( _rotCenter.x,  _rotCenter.y,  _rotCenter.z );
+		glRotated( angle/M_PI*180, axis.x, axis.y, axis.z );
+		glTranslated( -_rotCenter.x,  -_rotCenter.y,  -_rotCenter.z );
+	}
+	
+	void Arcball::stopDrag()
+	{
+		_inDragging = false;
+		_rotQuat = _dragQuat * _rotQuat;
+		_rotQuat.set_value(0,0,0,1);
+	}
+	
 } //namespace xglm {

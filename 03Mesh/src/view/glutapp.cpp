@@ -14,6 +14,27 @@
 
 namespace xglm {
 	
+	GLCamera::GLCamera()
+	{
+		_fovy   = 45;
+		_aspect = 1;
+		_znear  = 0.01f;
+		_zfar   = 100;
+	}
+	
+	GLCamera::GLCamera(GLfloat fovy, GLfloat aspect, GLfloat znear,  GLfloat zfar)
+	{
+		_fovy   = fovy;
+		_aspect = aspect;
+		_znear  = znear;
+		_zfar   = zfar;
+	}
+	
+	void GLCamera::applyProjection() const
+	{
+		gluPerspective(_fovy, _aspect, _znear, _zfar);
+	}
+
 	GLUTView::GLUTView()
 	{
 		_bkcolor[0] = 0.9f; 
@@ -23,146 +44,62 @@ namespace xglm {
 		setGUIFlag(1);
 	}
 
-	int GLUTView::initialize()
+	int GLUTView::init()
 	{
 		_fps.reset(30);
 		_gui.initialize();
 		return 1;
 	}
 	
-	void GLUTView::draw3DObjects()
+	void GLUTView::setShape(Shape3D * shape)
 	{
-	}
-
-	void GLUTView::draw2DObjects()
-	{
-		ImGUIState uis = _gui.getGUIState();
-		unsigned int textcolor = 0xFF0000;
-		char buf[256];
-
-		int x = uis.mousex;
-		int y = uis.mousey;
-		// draw a square to follow the mouse
-		fillRect(x-25, y-25, 50, 50, 0xFFFF);
-		// print the keyboard info
-		x = 50, y = getHeight()-60;
-		sprintf(buf, "Keychar    = %c", uis.lastkeys[1]);
-		drawText(buf, x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
-		sprintf(buf, "Keypressed = %c", uis.lastkeys[0]);
-		drawText(buf, x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
-		// modifiers key
-		drawText("Modifier keys are:", x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
-		if( uis.lastkeys[2] & IMGUI_SHIFT )
-			drawText("    Shift", x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
-		if( uis.lastkeys[2] & IMGUI_CTRL )
-			drawText("    Ctrl",  x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
-		if( uis.lastkeys[2] & IMGUI_ALT )
-			drawText("    Alt",   x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
-	}
-
-	void GLUTView::cbReshape (int width, int height)
-	{
-		glViewport(0, 0, width, height);
-		glGetIntegerv(GL_VIEWPORT, _viewport);
-	}
-
-	void GLUTView::cbDisplay(void)
-	{
-		// clears requested bits (color and depth) in glut window
-		glClearColor(_bkcolor[0], _bkcolor[1], _bkcolor[2], _bkcolor[3]);
-		glClearDepth(1.0f);// 0 is near, 1 is far
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// setting up for 3D drawing
-		draw3DObjects();
-		// compute the rendering speed (frames/second)
-		_fps.update();
-		// setting up for 2D drawing
-		glMatrixMode(GL_PROJECTION);        // switch to projection matrix
-		glPushMatrix();                     // save current projection matrix
-		glLoadIdentity();                   // reset projection matrix
-		gluOrtho2D(0, _viewport[2], 0, _viewport[3]); 
-		glMatrixMode(GL_MODELVIEW);         // switch to modelview matrix
-		glPushMatrix();                     // save current modelview matrix
-		glLoadIdentity();                   // reset modelview matrix
-		//glTranslatef(0, _viewport[3],0);
-		//glScalef(1.f, -1.f, 1.f);
-		glPushAttrib(GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_CURRENT_BIT);
-		glDisable(GL_LIGHTING);             //disable lighting for proper text color
-		glDisable(GL_TEXTURE_2D);           //no texture
-		displayMessages();
-		// draw user's 2D objects
-		if( getGUIFlag() ) {
-			_gui.prepare();
-			draw2DObjects();
-			_gui.finish();
-		}
-		// pop up settings
-		glPopAttrib();
-		glPopMatrix();             
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		// finish! and to present the drawings
-		glFlush();
-		glutSwapBuffers();
-		glutPostRedisplay();
+		if( ! shape ) return;
+		_shape = shape;
+		// store some scene parameters
+		Vec3f cen = shape->getCenter();
+		float sphRadius = shape->getRadius();
+		shape->_shapeRotCenter.set(cen.x, cen.y, cen.z);
+		shape->_shapeRotation.make_identity();
+		shape->_shapeScaling.set(1.f, 1.f, 1.f);
+		// model view
+		Vec3f eye = cen + sphRadius * 2.f * Vec3f(0,0,1);
+		_modelview.translation(-eye.x, -eye.y, -eye.z);
+		// adjust near/far plane
+		_camera._znear = sphRadius/10;
+		_camera._zfar = sphRadius*10;
+		// setup track ball
+		Vec4d rotCenter = _modelview * Vec4d(cen.x, cen.y, cen.z, 1);
+		_arcball.setRotCenter(rotCenter.x, rotCenter.y, rotCenter.z);
 	}
 	
-	void GLUTView::displayMessages()
+	void GLUTView::setupLights()
 	{
-		char buf[128];
-		sprintf(buf, "ESC -- toggle UI display, Ctrl+ESC -- quit, Running at %.2f FPS", _fps.getFPS());
-		drawText(buf, 20, getHeight()-20, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glLightfv(GL_LIGHT0, GL_POSITION, _variables.get("GL_LIGHT0_POSITION").getVec4f().get_value());
+		glLightfv(GL_LIGHT0, GL_DIFFUSE,  _variables.get("GL_LIGHT0_DIFFUSE").getVec4f().get_value());
 	}
 
-	void GLUTView::cbOverlayDisplay(void)
+	void GLUTView::setupGL() 
 	{
-	}
-
-	void GLUTView::cbKeyboard(unsigned char key, int x, int y)
-	{
-		_gui.onKeyboard(key, glutGetModifiers(), x, UpsideDown(y));
-		
-		if( key==27 ) { // ESC key
-			if( glutGetModifiers() & GLUT_ACTIVE_CTRL ) {
-				//cleanup();
-				exit(-1);
-			}
-			setGUIFlag(!getGUIFlag());
-		}
-	}
-
-	void GLUTView::cbKeyboardUp(unsigned char key, int x, int y)
-	{
-		//printf("cbKeyboardUp = %c %u\n", key, key);
-		_gui.onKeyboardUp(key, glutGetModifiers(), x, UpsideDown(y));
-	}
-
-	void GLUTView::cbSpecial(int key, int x, int y)
-	{
-		//printf("cbSpecial\n");
-		_gui.onSpecial(key, glutGetModifiers(), x, UpsideDown(y));
-	}
-
-	void GLUTView::cbSpecialUp(int key, int x, int y)
-	{
-		//printf("cbSpecialUp\n");
-		_gui.onSpecialUp(key, glutGetModifiers(), x, UpsideDown(y));
-	}
-
-	void GLUTView::cbMouse(int button, int state, int x, int y)
-	{
-		//printf("%d %d %d %d\n", button, state, x, y);
-		_gui.onMouse(button, state, x, UpsideDown(y));
-	}
-
-	void GLUTView::cbMotion(int x, int y)
-	{
-		_gui.onMotion( x, UpsideDown(y) );
-	}
-
-	void GLUTView::cbPassiveMotion(int x, int y )
-	{
-		_gui.onMotion( x, UpsideDown(y) );
+		Vec3f cen = _shape->getCenter();
+		float sphRadius = _shape->getRadius();
+		glClearColor(0, 0, 0, 0);
+		glClearDepth(1.0f);// 0 is near, 1 is far
+		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_LIGHT1);
+		glColorMaterial(GL_FRONT_AND_BACK,GL_DIFFUSE);
+		glEnable(GL_COLOR_MATERIAL);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);      // 4-byte pixel alignment
+		glLineWidth(2.0f);
+		glPointSize(15.f);
+		// init lights
+		_variables["GL_LIGHT0_POSITION"].getVec4f() = Vec4f( sphRadius/4, 0.f, 0.f, 1.f );
+		_variables["GL_LIGHT0_DIFFUSE"].getVec4f() = Vec4f( 0.7f, 0.8f, 0.8f, 1.f );
+		// setup light
+		glEnable(GL_LIGHTING); 
+		glEnable(GL_LIGHT0);
+		setupLights();
 	}
 
 } //namespace xglm {

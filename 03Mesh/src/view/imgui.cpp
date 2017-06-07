@@ -47,6 +47,11 @@ namespace xglm {
 		mGlutFont = f;
 		return 1;
 	}
+	
+	ImGUIState::ImGUIState()
+	{
+		memset((void*)this, 0, sizeof(ImGUIState));
+	}
 
 	void ImGUI::initialize()
 	{

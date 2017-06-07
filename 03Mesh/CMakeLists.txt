@@ -18,6 +18,7 @@ ELSE ()
 	MESSAGE(STATUS "other platform: ${CMAKE_SYSTEM_NAME}")  
 ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")  
 # cxx flags
+SET(CMAKE_CXX_FLAGS "-std=c++11 -fpermissive")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall")
 SET(CMAKE_C_FLAGS_RELEASE "-O3 -Wall")
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -Wall -g")

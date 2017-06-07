@@ -115,6 +115,7 @@ namespace xglm {
 
 		const T * get_value() const					{ return _v; }
 		Vec3<T> & set_value( const T * a )			{ V3_COPY(_v, a); return (*this); }
+		void set( const T vx, const T vy , const T vz) { V3_MAKE(_v, vx, vy, vz); }
 
 		// indexing operators
 		T & operator [] ( int i )					{ return _v[i]; }
@@ -131,7 +132,7 @@ namespace xglm {
 		T dot(const Vec3<T> & b) const										{  return V3_DOT(_v,b._v); }
 		// length
 		T length() const													{  return T(sqrt(this->dot(*this))); }
-		T square_length() const												{  return this->dot(*this); }
+		T squared_length() const												{  return this->dot(*this); }
 		// cross product
 		Vec3<T> cross(const Vec3<T>& a) const
 		{

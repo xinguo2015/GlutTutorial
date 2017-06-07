@@ -32,6 +32,7 @@ namespace xglm {
 		void set_value( const T t)		{ for(int i=0; i<16; i++ ) _array[i]=t; }
 		void set_value( const T * mp)	{ memcpy(_array, mp, sizeof(T)*16); }
 		void get_value( T * mp ) const	{ memcpy(mp, _array, sizeof(T)*16); }
+		const T* get_glmatrix() const			{ return _array; }
 
 		// set a uniform scale
 		void set_scale(                T    s )			{ elem(0,0) = elem(1,1) = elem(2,2) = s; }

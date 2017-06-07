@@ -9,11 +9,13 @@
 #include "imgui.h"
 #include "timer.h"
 
-namespace xglm {
-
 using namespace std;
 
-class MeshDoc;
+namespace xglm {
+
+class GLCamera;
+class GLUTView;
+template<class TView> class GLUTApp;
 
 class GLCamera
 {
@@ -21,12 +23,54 @@ public:
 	GLCamera();
 	GLCamera(GLfloat fovy, GLfloat aspect, GLfloat znear,  GLfloat zfar);
 public:
-	void setProj() const;
+	void applyProjection() const;
 public:
 	GLfloat _fovy;   // field of view in Y direction
 	GLfloat _aspect; // aspect ratio ( fovx / fovy )
 	GLfloat _znear;  // near plane
 	GLfloat _zfar;   // far plane
+};
+
+class Shape3D
+{
+public:
+	virtual Vec3f getCenter() const        { return Vec3f(0,0,0); } ;
+	virtual float getRadius() const        { return 1.0; };
+	virtual void  drawSolid() const        {}
+	virtual void  drawID()    const        {} 
+	virtual void  drawPicked(int id) const {}
+	virtual void  applyTransformGL() const {
+		glTranslatef( _shapeRotCenter.x, _shapeRotCenter.y, _shapeRotCenter.z);
+		glMultMatrixf(_shapeRotation.get_glmatrix());
+		glScalef(_shapeScaling.x, _shapeScaling.y, _shapeScaling.z); 
+		glTranslatef( -_shapeRotCenter.x, -_shapeRotCenter.y, -_shapeRotCenter.z);
+	}    
+public:
+	Vec3f  _shapeRotCenter;    // center of the rotation
+	Mat4f  _shapeRotation;     // rotation on the shape
+	Vec3f  _shapeScaling;      // scaling ont the shape
+};
+
+class Arcball
+{
+public:
+	void setBallSize(double size);
+	void setBallCenter(double x, double y);
+	void setRotCenter(double x, double y, double z);
+	int  inDragging() const;
+	int  update(ImGUIState gs);
+	void applyGLxform() const;
+	
+protected:
+	void startDrag();
+	void stopDrag();
+protected:
+	Vec2d  _ballCenter;
+	double _ballSize;
+	Vec3d  _rotCenter;
+	Quatd  _rotQuat;
+	Quatd  _dragQuat;
+	int    _inDragging;
 };
 
 class GLUTView
@@ -35,32 +79,44 @@ public:
 	GLUTView();
 	
 public:
+	// basic stuff
 	GLfloat    _bkcolor[4];  // background color
 	GLint      _viewport[4]; // viewport 
 	int        _guiFlag;     // show the GUI ?
 	ImGUI      _gui;         // Graphic User Interface
+	Arcball    _arcball;     // 3D rotation ui
 	FPSCounter _fps;         // frame per second
 	// 3D stuff
-	MeshDoc *  _meshDoc;
-	Mat4d      _
-	GLCamera _cameraView;    // camera view
-	Vec4d    _sceneCenter;   // c: center of the scene (in world)
-	double   _sceneSize;     // size of the scene
-	Vec4d    _sceneScaling;  // S: scaling imposed on the scene
-	Mat4d    _projection;    // the projection matrix
-	Mat4d    _modelview;     // M: model view matrix
-	Mat4d    _userRotate;    // A: the rotation center is: c*M
-public:
-	virtual int  initialize();
-	virtual void draw3DObjects();
-	virtual void draw2DObjects();
+	GLCamera _camera;       // camera view
+	Mat4d    _projection;   // the projection matrix
+	Mat4d    _dragXform;    // dragging trasformation matrix
+	Mat4d    _modelview;    // M: model view matrix
+	Shape3D* _shape;        // shape in viewing
+	VarSet   _variables;    // a set of variables
 
+public:
 	int  getHeight()          const { return _viewport[3]; }
 	int  getWidth()           const { return _viewport[2]; }
 	int  getGUIFlag()         const { return _guiFlag; }
 	void setGUIFlag(int flag)       { _guiFlag = flag; }
 	void displayMessages();
+	void setShape(Shape3D * shape);
 	
+	virtual int  init();
+	virtual void setupGL();
+	virtual void setupLights();
+	virtual void draw3DObjects();
+	virtual void draw2DObjects();
+	
+public: // 3D stuff
+	//virtual void drawScene() = 0;
+	//virtual void drawText() = 0;
+	//virtual void initialize();
+	//virtual void applyProjectionAndModelview();
+	//virtual void displayText();
+	//virtual void setupLights();
+	virtual void applyProjectionAndModelview();
+
 public:
 	// glut callback functions
 	virtual void cbReshape(int width, int height); 
@@ -81,8 +137,6 @@ public:
 	virtual void cbMenuState(int state)                {}
 	virtual void cbWindowStatus(int state)             {}
 };
-
-Quatd arcball(ImGUIState gs, Vec3d ballCenter, double ballSize);
 
 template <class TView>
 class GLUTApp
@@ -116,7 +170,24 @@ public:
 		return _glview; 
 	}
 
-public:
+protected:
+	static TView * _glview;
+	static TView * createView()
+	{
+		TView * view = new TView;
+		if( view  ) // initialize
+			view->init();
+		return view;
+	}
+	
+protected:
+	int    _winID;
+	int    _winWidth;
+	int    _winHeight;
+	int    _winPosX;
+	int    _winPosY;
+	string _winTitle;
+public: // glut callbacks
 	static void cbReshape(int width, int height)                { getView()->cbReshape(width, height); }
 	static void cbDisplay(void)								    { getView()->cbDisplay(); }
 	static void cbOverlayDisplay(void)							{ getView()->cbOverlayDisplay(); }
@@ -134,24 +205,6 @@ public:
 	static void cbMenuStatus(int status, int x, int y)      	{ getView()->cbMenuStatus(status,x,y); }
 	static void cbMenuState(int state)                      	{ getView()->cbMenuState(state); }
 	static void cbWindowStatus(int state)     					{ getView()->cbWindowStatus(state); }
-	
-protected:
-	int    _winID;
-	int    _winWidth;
-	int    _winHeight;
-	int    _winPosX;
-	int    _winPosY;
-	string _winTitle;
-	
-protected:
-	static TView * _glview;
-	static TView * createView()
-	{
-		TView * view = new TView;
-		if( view  ) // initialize
-			view->initialize();
-		return view;
-	}
 };
 
 template<typename TView> 

@@ -1,10 +1,12 @@
 #ifndef __variables_h_________________________
 #define __variables_h_________________________
 
-#include "XGLM.h"
+#include <stdio.h>
+#include <vector>
+#include "Math3D/math.h"
 
 namespace xglm {
-	
+
 typedef std::vector<int>    IntArray;
 typedef std::vector<float>  FloatArray;
 typedef std::vector<double> DoubleArray;
@@ -13,7 +15,6 @@ typedef std::vector<Vec3i>  V3iArray;
 typedef std::vector<Vec3f>  V3fArray;
 typedef std::vector<Vec3d>  V3dArray;
 
-                   
 class VarValue
 {
 	char v[sizeof(double)*16];
@@ -46,7 +47,7 @@ public:
 	const char* setstr(const char* s)
 	{
 		if( strlen(s)>sizeof(v)-1 ) {
-			xglm_debug("The str is too long to store");
+			printf(__FILE__",line %d, The str is too long to store", __LINE__);
 			return NULL;
 		}
 		strcpy(v,s);
