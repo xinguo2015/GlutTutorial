@@ -4,7 +4,7 @@
 
 #include "demo.h"
 
-GLUTApp<MyView> theAPP("GLUT Template", 800, 600);
+GLUTApp<MyView> theAPP("GLUT Template", 1024, 960);
 
 int main (int argc, char *argv[])
 {

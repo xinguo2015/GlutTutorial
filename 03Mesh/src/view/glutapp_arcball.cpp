@@ -86,7 +86,7 @@ namespace xglm {
 				stage = 2;
 			}
 			else { // button up
-				stopDrag();
+				finishDrag();
 				stage = 3;
 			}
 		} else if( gs.buttondown ) {
@@ -111,12 +111,17 @@ namespace xglm {
 		glTranslated( -_rotCenter.x,  -_rotCenter.y,  -_rotCenter.z );
 	}
 	
-	void Arcball::stopDrag()
+	void Arcball::finishDrag()
 	{
 		_inDragging = false;
 		//_rotQuat = _rotQuat * _dragQuat;
 		_rotQuat = _dragQuat * _rotQuat;
 		//_rotQuat.set_value(0,0,0,1);
+	}
+	
+	void Arcball::cancelDrag()
+	{
+		_inDragging = false;
 	}
 	
 } //namespace xglm {

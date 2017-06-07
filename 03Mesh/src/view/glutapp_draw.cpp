@@ -54,8 +54,10 @@ namespace xglm {
 		glClearDepth(1.0f);// 0 is near, 1 is far
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// 3D drawing
+		draw3DObjects();
 		if( ! getGUIFlag() ) {
-			draw3DObjects();
+			// update arcball 
+			_arcball.update(_gui.getGUIState());
 		}
 		// compute the rendering speed (frames/second)
 		_fps.update();
@@ -108,8 +110,6 @@ namespace xglm {
 		if( ! _shape ) return;
 		// set up camera and model view
 		applyProjectionAndModelview();
-		// update arcball 
-		_arcball.update(_gui.getGUIState());
 		// draw the shape
 		_shape->drawSolid();
 	}

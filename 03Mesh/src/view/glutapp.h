@@ -75,7 +75,8 @@ public:
 	
 protected:
 	void startDrag();
-	void stopDrag();
+	void finishDrag();
+	void cancelDrag();
 protected:
 	double _ballSize;
 	Vec2d  _ballCenter;
