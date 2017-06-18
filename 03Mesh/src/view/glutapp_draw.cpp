@@ -42,9 +42,13 @@ namespace xglm {
 
 	void GLUTView::displayMessages()
 	{
-		char buf[128];
-		sprintf(buf, "ESC -- toggle UI display, Ctrl+ESC -- quit, Running at %.2f FPS", _fps.getFPS());
+		char buf[128]; int bw;
+		sprintf(buf, "F1 -- UI Show, ESC -- Quit");
 		drawText(buf, 20, getHeight()-20, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
+		sprintf(buf, "Running at %.2f FPS", _fps.getFPS());
+		bw = glutBitmapLength(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char*)buf);
+		bw = (bw+99)/50*50;
+		drawText(buf, getWidth()-bw, getHeight()-20, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
 	}
 	
 	void GLUTView::cbDisplay(void)

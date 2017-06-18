@@ -52,7 +52,7 @@ namespace xglm {
 
 	int GLUTView::init()
 	{
-		_fps.reset(30);
+		_fps.reset(100);
 		_gui.initialize();
 		return 1;
 	}
