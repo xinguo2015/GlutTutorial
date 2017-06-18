@@ -35,7 +35,7 @@ namespace xglm {
 		//printf("cbKeyboardUp = %c %u\n", key, key);
 		_gui.onKeyboardUp(key, glutGetModifiers(), x, UpsideDown(y));
 		
-		if( key==27 ) { // ESC key
+		if( key==27 ) { 
 			//cleanup();
 			exit(-1);
 		}
@@ -45,6 +45,9 @@ namespace xglm {
 	{
 		//printf("cbSpecial\n");
 		_gui.onSpecial(key, glutGetModifiers(), x, UpsideDown(y));
+		if( key==GLUT_KEY_F1 ) { 
+			setGUIFlag(!getGUIFlag());
+		}
 	}
 
 	void GLUTView::cbSpecialUp(int key, int x, int y)
