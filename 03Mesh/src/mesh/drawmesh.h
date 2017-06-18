@@ -1,5 +1,5 @@
-#ifndef ____draw_utilities_____________
-#define ____draw_utilities_____________
+#ifndef __draw_mesh_stuff_____________
+#define __draw_mesh_stuff_____________
 
 #include "xglm.h"
 #include "pickpixel.h"
@@ -26,11 +26,11 @@ public:
 		const vector<Vec3f>& position );
 	static void PointID(
 		const vector<Vec3f>& position );
-	static void Picked(int pickedID,
+	static void Picked(PixelInfo pickedID,
 		const vector<Vec3i>& triangle, 
 		const vector<Vec3f>& position);
 };
 	
 } //namespace xglm {
 
-#endif //#ifndef ____draw_utilities_____________
+#endif //#ifndef __draw_mesh_stuff_____________

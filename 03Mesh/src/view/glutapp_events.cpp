@@ -21,6 +21,8 @@ namespace xglm {
 		_camera.reshape(width, height);
 		_arcball.setBallCenter(width/2,height/2);
 		_arcball.setBallSize( width<height ? width : height );
+		_pickbuf.resize(width,height);
+		_pickbuf.markDirty(1);
 	}
 	
 	void GLUTView::cbKeyboard(unsigned char key, int x, int y)
@@ -34,13 +36,8 @@ namespace xglm {
 		_gui.onKeyboardUp(key, glutGetModifiers(), x, UpsideDown(y));
 		
 		if( key==27 ) { // ESC key
-			if( glutGetModifiers() & GLUT_ACTIVE_CTRL ) {
-				//cleanup();
-				exit(-1);
-			}
-			else {
-				setGUIFlag(!getGUIFlag());
-			}
+			//cleanup();
+			exit(-1);
 		}
 	}
 
@@ -54,6 +51,10 @@ namespace xglm {
 	{
 		//printf("cbSpecialUp\n");
 		_gui.onSpecialUp(key, glutGetModifiers(), x, UpsideDown(y));
+		
+		if( key==GLUT_KEY_F1 ) {
+			setGUIFlag(!getGUIFlag());
+		}
 	}
 
 	void GLUTView::cbMouse(int button, int state, int x, int y)

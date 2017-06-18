@@ -8,6 +8,7 @@
 #include "myglut.h"
 #include "imgui.h"
 #include "timer.h"
+#include "pickbuffer.h"
 
 using namespace std;
 
@@ -100,27 +101,32 @@ public:
 	Arcball    _arcball;     // 3D rotation ui
 	FPSCounter _fps;         // frame per second
 	// 3D stuff
-	GLCamera _camera;       // camera view
-	Mat4d    _projection;   // the projection matrix
-	Mat4d    _dragXform;    // dragging trasformation matrix
-	Mat4d    _modelview;    // M: model view matrix
-	Shape3D* _shape;        // shape in viewing
-	VarSet   _variables;    // a set of variables
+	Mat4d      _modelview;    // M: model view matrix
+	Mat4d      _projection;   // the projection matrix
+	GLCamera   _camera;       // camera view
+	Shape3D*   _shape;        // shape in viewing
+	// mouse picking
+	PickBuf    _pickbuf;      // ID buf for picking
+	// miscs variable
+	VarSet     _values;       // a set of variables
 
 public:
 	int  getHeight()          const { return _viewport[3]; }
 	int  getWidth()           const { return _viewport[2]; }
 	int  getGUIFlag()         const { return _guiFlag; }
 	void setGUIFlag(int flag)       { _guiFlag = flag; }
-	void displayMessages();
+	void showHelp();
 	void setShape(Shape3D * shape);
 	void initArcball();
 	
 	virtual int  init();
 	virtual void setupGL();
 	virtual void setupLights();
-	virtual void draw3DObjects();
-	virtual void draw2DObjects();
+	virtual void drawUI();
+	virtual void drawScene();
+	virtual void drawPicked();
+	virtual bool needUpdatePickBuf();
+	virtual void genPickBuf();
 	
 public: // 3D stuff
 	//virtual void drawScene() = 0;

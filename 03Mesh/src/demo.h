@@ -55,6 +55,7 @@ public:
 	MyView() { 
 		setGUIFlag(0); // hide gui
 	}
+	void drawUIOld();
 	// override GLUTVIew::draw2DObjects()
-	void draw2DObjects();
+	void drawUI();
 };

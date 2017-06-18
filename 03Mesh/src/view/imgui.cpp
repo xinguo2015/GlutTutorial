@@ -208,7 +208,7 @@ namespace xglm {
 	}
 
 
-	void ImGUI::radioFrame(int x, int y, int w, int h)
+	void ImGUI::groupbox(int x, int y, int w, int h)
 	{
 		drawRect(x,y,w,h,guiColorHot);
 	}
@@ -254,7 +254,7 @@ namespace xglm {
 	// Simple scroll bar IMGUI widget
 	int ImGUI::slider(int id, int x, int y, int w, int h, double min, double max, double delta, double * value)
 	{
-		int cursize = 16; // cursor size
+		int cursize = 20; // cursor size
 		int border = 2;   // distance against the cursor
 		int hintsize = 2; // thickness of the focus hint
 		int vertical = w < h;// sliding direction
@@ -291,10 +291,10 @@ namespace xglm {
 		
 		// render the cursor
 		if (mGuiState.activeitem == id || mGuiState.hotitem == id) {
-			fillRect( vertical ? x+(w-cursize)/2 : x+curpos,
+			fillDiamond( vertical ? x+(w-cursize)/2 : x+curpos,
 				vertical ? y + curpos : y+(h-cursize)/2, cursize, cursize, guiColorWhite);
 		} else {
-			fillRect( vertical ? x+(w-cursize)/2 : x+curpos,
+			fillDiamond( vertical ? x+(w-cursize)/2 : x+curpos,
 				vertical ? y + curpos : y+(h-cursize)/2, cursize, cursize, guiColorHot);
 		}
 		// If we have keyboard focus, we'll need to process the keys

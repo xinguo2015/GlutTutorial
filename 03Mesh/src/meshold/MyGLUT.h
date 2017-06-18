@@ -8,6 +8,4 @@
 #include <GL/glut.h>
 #endif
 
-// a base class of methods for handling GLUT window callback
-
 #endif // #ifndef ___my_glut_h___________________

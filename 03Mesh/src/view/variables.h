@@ -26,8 +26,10 @@ class VarValue
 {
 	char v[sizeof(double)*16];
 public:
-#define addmethod(a) a  get##a() const { return *(const a*)(const void*)v; } \
-                     a& get##a()       { return *(a*)(void*)v; } 
+	VarValue()          { memset(v,0,sizeof(v)); }
+#define addmethod(Type) Type  get##Type() const { return *(const Type*)(const void*)v; } \
+                        Type& get##Type()       { return *(Type*)(void*)v; } \
+                        VarValue(Type value)    { get##Type()=value; }
 	addmethod(char)
 	addmethod(int)
 	addmethod(unsigned)
@@ -66,13 +68,29 @@ public:
 class VarSet
 {
 public: 
-	      VarValue & operator[](const std::string & key)    { return _str_vs[key]; }
-	const VarValue &        get(const std::string & key)    { return _str_vs.at(key); }
-	      VarValue & operator[](              int   key)    { return _int_vs[key]; }
-	const VarValue &        get(              int   key)    { return _int_vs.at(key); }
+	// access method
+	VarValue & operator[](const std::string & key) { return _str_vs[key]; }
+	VarValue & operator[]( int key               ) { return _int_vs[key]; }
+	// access method with default value
+	VarValue & get( int key, VarValue defaultValue ) {
+		std::map<int,VarValue>::iterator p = _int_vs.find(key);
+		if( p!=_int_vs.end() )
+			return p->second;
+		VarValue & v = _int_vs[key];
+		v = defaultValue;
+		return v; 
+	}
+	VarValue & get( const std::string & key, VarValue defaultValue ) {
+		std::map<std::string,VarValue>::iterator p = _str_vs.find(key);
+		if( p!=_str_vs.end() )
+			return p->second;
+		VarValue & v = _str_vs[key];
+		v = defaultValue;
+		return v; 
+	}
 	// check variable existence
-	bool find(const std::string & key) const { return _str_vs.find(key)!=_str_vs.end(); }
-	bool find(int                 key) const { return _int_vs.find(key)!=_int_vs.end(); }
+	bool check(const std::string & key) const { return _str_vs.find(key)!=_str_vs.end(); }
+	bool check(int                 key) const { return _int_vs.find(key)!=_int_vs.end(); }
 protected:
 	std::map<std::string,VarValue>   _str_vs;
 	std::map<int,        VarValue>   _int_vs;

@@ -85,23 +85,42 @@ namespace xglm {
 	}
 	
 	void DrawMesh::PointID(
-		const vector<Vec3f>& position)
+		const vector<Vec3f>& points)
 	{
 		PixelInfo p;
 		glBegin(GL_POINTS);
-		for( std::size_t k=0; k<position.size(); k++ )
+		for( std::size_t k=0; k<points.size(); k++ )
 		{
 			p.pack(1,k);
 			glColor4ubv((unsigned char*)p);
-			glVertex3fv(position[k].get_value());
+			glVertex3fv(points[k].get_value());
 		}
 		glEnd();
 	}
 	
-	void DrawMesh::Picked( int pickedID,
-		const vector<Vec3i>& triangle, 
-		const vector<Vec3f>& position)
+	void DrawMesh::Picked( PixelInfo pickedID,
+		const vector<Vec3i>& triangles, 
+		const vector<Vec3f>& points)
 	{
+		unsigned int typ = pickedID.getType();
+		unsigned int idx = pickedID.getIndex();
+		if( typ==1 && idx<points.size() ) { // vertex
+			glBegin(GL_POINTS);
+			glColor4ub(255,0,0,0);
+			glVertex3fv(points[idx].get_value());
+			glEnd();
+			//printf("cursor points\n");
+		}
+		else if( typ==2 && idx<triangles.size() ) {  // face
+			const int * t = triangles[idx].get_value();
+			glPointSize(15);
+			glBegin(GL_TRIANGLES);
+			glColor4ub(255,0,0,0);
+			for( int k = 0; k<3; k++ )
+				glVertex3fv(points[t[k]].get_value());
+			glEnd();
+			//printf("cursor triangle\n");
+		}
 	}
 ////////////////////
 } //namespace xglm {

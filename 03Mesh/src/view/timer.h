@@ -68,7 +68,7 @@ public:
 	{
 		int n = _buffer.size();
 		if( _ftotal>=n )
-			return (n-1)/(_buffer[_fcurr] - _buffer[(_fcurr+n-1)%n]);
+			return (n-1)/(_buffer[_fcurr] - _buffer[(_fcurr+1)%n]);
 		else if( _fcurr>0 )
 			return _fcurr/ (_buffer[_fcurr] - _buffer[0]);
 		return 0;

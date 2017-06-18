@@ -9,12 +9,13 @@
 #include "glutapp.h"
 #include "imgui_keys.h"
 #include "utilities.h"
+#include "mesh/drawmesh.h"
 
 #define UpsideDown(y) (getHeight()-1-(y))
 
 namespace xglm {
 	
-	void GLUTView::draw2DObjects()
+	void GLUTView::drawUI()
 	{
 		ImGUIState uis = _gui.getGUIState();
 		unsigned int textcolor = 0xFF0000;
@@ -40,11 +41,16 @@ namespace xglm {
 			drawText("    Alt",   x, y-=40, textcolor, GLUT_BITMAP_TIMES_ROMAN_24);
 	}
 
-	void GLUTView::displayMessages()
+	void GLUTView::showHelp()
 	{
-		char buf[128];
-		sprintf(buf, "ESC -- toggle UI display, Ctrl+ESC -- quit, Running at %.2f FPS", _fps.getFPS());
-		drawText(buf, 20, getHeight()-20, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
+		char msg[128];
+		int w, x = 20, y = 8;
+		sprintf(msg, "F1 -- Options UI,   ESC -- Quit");
+		drawText(msg, x, y, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
+		sprintf(msg, "Running at %.2f FPS", _fps.getFPS());
+		w = glutBitmapLength(GLUT_BITMAP_TIMES_ROMAN_24, (unsigned char*)msg);
+		w = (w+29)/30*30;
+		drawText(msg, getWidth()-w, y, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
 	}
 	
 	void GLUTView::cbDisplay(void)
@@ -54,7 +60,7 @@ namespace xglm {
 		glClearDepth(1.0f);// 0 is near, 1 is far
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// 3D drawing
-		draw3DObjects();
+		drawScene();
 		if( ! getGUIFlag() ) {
 			// update arcball 
 			_arcball.update(_gui.getGUIState());
@@ -75,16 +81,16 @@ namespace xglm {
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);             //disable lighting for proper text color
 		glDisable(GL_TEXTURE_2D);           //no texture
-		displayMessages();
+		showHelp();
 		// draw user's 2D objects
 		if( getGUIFlag() ) {
 			_gui.prepare();
-			draw2DObjects();
+			drawUI();
 			_gui.finish();
 		}
 		// pop up settings
 		glPopAttrib();
-		glPopMatrix();             
+		glPopMatrix();
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 		// finish! and to present the drawings
@@ -104,14 +110,61 @@ namespace xglm {
 		//glMultMatrixd( _dragXform.get_glmatrix() );
 		glMultMatrixd( _modelview.get_glmatrix() );
 	}
-
-	void GLUTView::draw3DObjects()
+	
+	bool GLUTView::needUpdatePickBuf()
+	{
+		return ( _values.get("PickingFlag", VarValue(0)).getint() 
+			&&   _pickbuf.isDirty() 
+			&&   _pickbuf.mBuffer.size()>0 );
+	}
+	void GLUTView::genPickBuf()
+	{
+		glPushMatrix();
+		glPushAttrib(GL_COLOR_BUFFER_BIT|GL_LIGHTING_BIT|GL_POLYGON_BIT|GL_POINT_BIT); 
+		{
+			glDisable(GL_LIGHTING);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glClearColor(0.f, 0.f, 0.f, 0.f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			_shape->drawID();
+			glFlush();
+			// read out the color buffer 
+			glReadBuffer(GL_BACK);
+			glReadPixels(0,0,_viewport[2], _viewport[3], GL_RGBA, 
+						 GL_UNSIGNED_BYTE, _pickbuf.getBuf());
+		}
+		glPopAttrib();
+		glPopMatrix();
+		_pickbuf.markDirty(false);
+	}
+	
+	void GLUTView::drawPicked()
+	{
+		const ImGUIState & gs = _gui.getGUIState();
+		int x = gs.mousex;
+		int y = gs.mousey;
+		if( ! _pickbuf.contain(x,y) )
+			return;
+		PixelInfo picked = _pickbuf.getAt(x,y);
+		glPushAttrib(GL_LIGHTING_BIT);
+		glDisable(GL_LIGHTING);
+		_shape->drawPicked( picked );
+		glPopAttrib();
+	}
+	
+	void GLUTView::drawScene()
 	{
 		if( ! _shape ) return;
 		// set up camera and model view
 		applyProjectionAndModelview();
+		// update pick buf
+		if( needUpdatePickBuf() ) 
+			genPickBuf();
 		// draw the shape
 		_shape->drawSolid();
+		if( _values.get("DrawPicked", VarValue(1)).getint() ) {
+			drawPicked();
+		}
 	}
 
 	

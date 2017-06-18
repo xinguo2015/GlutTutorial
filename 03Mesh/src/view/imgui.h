@@ -69,9 +69,10 @@ namespace xglm {
 	class ImGUI
 	{
 	public:
-		ImGUI()                        { initialize(); mFlags = 1; }
-		ImGUIState getGUIState() const { return mGuiState; }
-		int  flags()                   { return mFlags; }
+		ImGUI()                                { initialize(); mFlags = 1; }
+		const ImGUIState & getGUIState() const { return mGuiState; }
+		ImGUIState & getGUIState()             { return mGuiState; }
+		int  flags()                           { return mFlags; }
 	public:
 		void setfont(void* font);
 		void initialize();
@@ -98,11 +99,10 @@ namespace xglm {
 		int editbox  (int id, int x, int y, int w, int h, char textbuf[], int maxbuf);
 		int textlabel(int id, int x, int y, int w, int h, char text[]);
 
-		void radioFrame(int x, int y, int w, int h);
+		void groupbox(int x, int y, int w, int h);
 	protected:
 		int listitem(int id, int x, int y, int w, int h, char label[], int selected);
 		int slider_base(int id, int x, int y, int w, int h, double minv, double maxv, double delta, double * value);
-
 	protected:
 		ImGUIState mGuiState;
 		int        mFlags;
