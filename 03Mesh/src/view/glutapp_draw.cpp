@@ -59,12 +59,14 @@ namespace xglm {
 		glClearColor(_bkcolor[0], _bkcolor[1], _bkcolor[2], _bkcolor[3]);
 		glClearDepth(1.0f);// 0 is near, 1 is far
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDrawBuffer(GL_BACK);
 		// 3D drawing
-		drawScene();
 		if( ! getGUIFlag() ) {
 			// update arcball 
-			_arcball.update(_gui.getGUIState());
+			int ds = _arcball.update(_gui.getGUIState());
+			if( ds==2 ) _pickbuf.markDirty(1);
 		}
+		drawScene();
 		// compute the rendering speed (frames/second)
 		_fps.update();
 		// setting up for 2D drawing
@@ -135,7 +137,7 @@ namespace xglm {
 		}
 		glPopAttrib();
 		glPopMatrix();
-		_pickbuf.markDirty(false);
+		_pickbuf.markDirty(0);
 	}
 	
 	void GLUTView::drawPicked()

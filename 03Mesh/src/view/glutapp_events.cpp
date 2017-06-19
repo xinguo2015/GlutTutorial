@@ -45,9 +45,6 @@ namespace xglm {
 	{
 		//printf("cbSpecial\n");
 		_gui.onSpecial(key, glutGetModifiers(), x, UpsideDown(y));
-		if( key==GLUT_KEY_F1 ) { 
-			setGUIFlag(!getGUIFlag());
-		}
 	}
 
 	void GLUTView::cbSpecialUp(int key, int x, int y)
