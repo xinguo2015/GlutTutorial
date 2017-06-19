@@ -162,7 +162,7 @@ template <class TView>
 class GLUTApp
 {
 public:
-	GLUTApp(const char title[] = "OpenGL Application", int winWidth = 800,  int winHeight = 600,
+	GLUTApp(const char title[] = "GLUT Application", int winWidth = 800,  int winHeight = 600,
 			int posX = 200,  int posY = 200 ) :_winID(-1),  _winWidth(winWidth),  
 			_winHeight(winHeight), _winPosX(posX),  _winPosY(posY)
 	{	

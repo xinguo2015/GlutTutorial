@@ -52,20 +52,33 @@ namespace xglm {
 		w = (w+29)/30*30;
 		drawText(msg, getWidth()-w, y, 0xFF7777, GLUT_BITMAP_TIMES_ROMAN_24 );
 	}
-	
+
+	void GLUTView::drawScene(void)
+	{
+		if( ! _shape ) return;
+		// set up camera and model view
+		applyProjectionAndModelview();
+		// update pick buf
+		if( needUpdatePickBuf() )
+			genPickBuf();
+		glClearColor(_bkcolor[0], _bkcolor[1], _bkcolor[2], _bkcolor[3]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glColor3f(1.f, 1.f, 1.f);
+		// draw the shape
+		_shape->drawSolid();
+		if( _values.get("DrawPicked", VarValue(1)).getint() )
+			drawPicked();
+	}
+
 	void GLUTView::cbDisplay(void)
 	{
-		// clears requested bits (color and depth) in glut window
-		glClearColor(_bkcolor[0], _bkcolor[1], _bkcolor[2], _bkcolor[3]);
-		glClearDepth(1.0f);// 0 is near, 1 is far
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDrawBuffer(GL_BACK);
-		// 3D drawing
+		// arcball
 		if( ! getGUIFlag() ) {
 			// update arcball 
 			int ds = _arcball.update(_gui.getGUIState());
 			if( ds==2 ) _pickbuf.markDirty(1);
 		}
+		// draw 3d stuff
 		drawScene();
 		// compute the rendering speed (frames/second)
 		_fps.update();
@@ -153,21 +166,5 @@ namespace xglm {
 		_shape->drawPicked( picked );
 		glPopAttrib();
 	}
-	
-	void GLUTView::drawScene()
-	{
-		if( ! _shape ) return;
-		// set up camera and model view
-		applyProjectionAndModelview();
-		// update pick buf
-		if( needUpdatePickBuf() ) 
-			genPickBuf();
-		// draw the shape
-		_shape->drawSolid();
-		if( _values.get("DrawPicked", VarValue(1)).getint() ) {
-			drawPicked();
-		}
-	}
 
-	
 } //namespace xglm {
