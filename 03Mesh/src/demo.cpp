@@ -28,7 +28,7 @@ int main (int argc, char *argv[])
 			mdoc.setMesh( &theMesh );
 			theAPP.getView()->setShape( &mdoc );
 			theAPP.getView()->initArcball();
-			theAPP.getView()->setupGL();
+			theAPP.getView()->initGL();
 		}
 	}
 

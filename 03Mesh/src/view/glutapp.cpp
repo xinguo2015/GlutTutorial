@@ -80,15 +80,17 @@ namespace xglm {
 		_arcball.setRotCenter(rotCenter.x, rotCenter.y, rotCenter.z);
 	}
 	
-	void GLUTView::setupLights()
+	void GLUTView::initLights()
 	{
+		glEnable(GL_LIGHTING); 
+		glEnable(GL_LIGHT0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glLightfv(GL_LIGHT0, GL_POSITION, _values.get("GL_LIGHT0_POSITION", VarValue(Vec4f(0,0,0,1))).getVec4f().get_value());
 		glLightfv(GL_LIGHT0, GL_DIFFUSE,  _values.get("GL_LIGHT0_DIFFUSE", VarValue(Vec4f(1,1,1,1))).getVec4f().get_value());
 	}
 
-	void GLUTView::setupGL() 
+	void GLUTView::initGL() 
 	{
 		Vec3f cen = _shape->getBdCenter();
 		float rds = _shape->getBdRadius();
@@ -104,10 +106,7 @@ namespace xglm {
 		// init lights
 		_values["GL_LIGHT0_POSITION"].getVec4f() = Vec4f( rds/4, 0.f, 0.f, 1.f );
 		_values["GL_LIGHT0_DIFFUSE"].getVec4f() = Vec4f( 0.7f, 0.8f, 0.8f, 1.f );
-		// setup light
-		glEnable(GL_LIGHTING); 
-		glEnable(GL_LIGHT0);
-		setupLights();
+		initLights();
 	}
 
 } //namespace xglm {

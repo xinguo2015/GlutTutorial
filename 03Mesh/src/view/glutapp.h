@@ -120,21 +120,13 @@ public:
 	void initArcball();
 	
 	virtual int  init();
-	virtual void setupGL();
-	virtual void setupLights();
+	virtual void initGL();
+	virtual void initLights();
 	virtual void drawUI();
 	virtual void drawScene();
 	virtual void drawPicked();
-	virtual bool needUpdatePickBuf();
 	virtual void genPickBuf();
-	
-public: // 3D stuff
-	//virtual void drawScene() = 0;
-	//virtual void drawText() = 0;
-	//virtual void initialize();
-	//virtual void applyProjectionAndModelview();
-	//virtual void displayText();
-	//virtual void setupLights();
+	virtual bool needUpdatePickBuf();
 	virtual void applyProjectionAndModelview();
 
 public:

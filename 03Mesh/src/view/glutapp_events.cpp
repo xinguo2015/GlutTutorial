@@ -10,7 +10,7 @@
 #include "imgui_keys.h"
 #include "utilities.h"
 
-#define UpsideDown(y) (getHeight()-1-(y))
+#define InvertDirY(y) (getHeight()-1-(y))
 
 namespace xglm {
 	
@@ -27,13 +27,13 @@ namespace xglm {
 	
 	void GLUTView::cbKeyboard(unsigned char key, int x, int y)
 	{
-		_gui.onKeyboard(key, glutGetModifiers(), x, UpsideDown(y));
+		_gui.onKeyboard(key, glutGetModifiers(), x, InvertDirY(y));
 	}
 
 	void GLUTView::cbKeyboardUp(unsigned char key, int x, int y)
 	{
 		//printf("cbKeyboardUp = %c %u\n", key, key);
-		_gui.onKeyboardUp(key, glutGetModifiers(), x, UpsideDown(y));
+		_gui.onKeyboardUp(key, glutGetModifiers(), x, InvertDirY(y));
 		
 		if( key==27 ) { 
 			//cleanup();
@@ -44,13 +44,13 @@ namespace xglm {
 	void GLUTView::cbSpecial(int key, int x, int y)
 	{
 		//printf("cbSpecial\n");
-		_gui.onSpecial(key, glutGetModifiers(), x, UpsideDown(y));
+		_gui.onSpecial(key, glutGetModifiers(), x, InvertDirY(y));
 	}
 
 	void GLUTView::cbSpecialUp(int key, int x, int y)
 	{
 		//printf("cbSpecialUp\n");
-		_gui.onSpecialUp(key, glutGetModifiers(), x, UpsideDown(y));
+		_gui.onSpecialUp(key, glutGetModifiers(), x, InvertDirY(y));
 		
 		if( key==GLUT_KEY_F1 ) {
 			setGUIFlag(!getGUIFlag());
@@ -60,17 +60,17 @@ namespace xglm {
 	void GLUTView::cbMouse(int button, int state, int x, int y)
 	{
 		//printf("%d %d %d %d\n", button, state, x, y);
-		_gui.onMouse(button, state, x, UpsideDown(y));
+		_gui.onMouse(button, state, x, InvertDirY(y));
 	}
 
 	void GLUTView::cbMotion(int x, int y)
 	{
-		_gui.onMotion( x, UpsideDown(y) );
+		_gui.onMotion( x, InvertDirY(y) );
 	}
 
 	void GLUTView::cbPassiveMotion(int x, int y )
 	{
-		_gui.onMotion( x, UpsideDown(y) );
+		_gui.onMotion( x, InvertDirY(y) );
 	}
 
 } //namespace xglm {
