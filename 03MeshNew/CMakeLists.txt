@@ -27,12 +27,15 @@ SET(CMAKE_BUILD_TYPE Release)
 SET(CMAKE_BUILD_TYPE Debug) 
 # build target
 include_directories (src)
+include_directories (src/common)
+include_directories (libs/glm-master)
 AUX_SOURCE_DIRECTORY(src      src)
 AUX_SOURCE_DIRECTORY(src/view srcView)
 AUX_SOURCE_DIRECTORY(src/mesh srcMesh)
+AUX_SOURCE_DIRECTORY(src/common  srcCommon)
 # exe
 GET_FILENAME_COMPONENT(exeName "${CMAKE_SOURCE_DIR}" NAME)
-ADD_EXECUTABLE(${exeName} ${srcView} ${srcMesh} ${src})
+ADD_EXECUTABLE(${exeName} ${src} ${srcView} ${srcMesh} ${srcCommon})
 TARGET_LINK_LIBRARIES(${exeName} 
 	-lGL -lGLU -lglut -lm )
 

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="view">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="mesh">
+      <UniqueIdentifier>{e5d9c523-c45b-4382-a6c3-900c57994532}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\demo.cpp" />
+    <ClCompile Include="src\demo_imgui.cpp" />
+    <ClCompile Include="src\mesh\drawmesh.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\meshIO.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\meshIO_obj.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh\trimesh.cpp">
+      <Filter>mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\glutapp.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\glutapp_arcball.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\glutapp_draw.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\glutapp_events.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\imgui.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\timer.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\utilities.cpp">
+      <Filter>view</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\demo.h" />
+    <ClInclude Include="src\mesh\drawmesh.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\meshIO.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\pickpixel.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\trimesh.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\xglm.h">
+      <Filter>mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\glutapp.h">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\imgui.h">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\imgui_keys.h">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\myglut.h">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\timer.h">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\utilities.h">
+      <Filter>view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\variables.h">
+      <Filter>view</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
